@@ -1,0 +1,294 @@
+/* Importar fuentes de Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap');
+
+:root {
+    /* Paleta de colores Blue Lock */
+    --bg-dark: #1a1a2e;
+    --bg-medium: #16213e;
+    --accent-blue: #0f3460;
+    --electric-blue: #00bcd4;
+    --text-light: #e0e0e0;
+    --text-muted: #888;
+    --stat-value-color: #f7e018; /* Un color para resaltar los valores de las estadísticas */
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Fondo sutil (opcional, mantener consistencia) */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(0,0,0,0.1) 25%, transparent 25%) -50px 0,
+        linear-gradient(225deg, rgba(0,0,0,0.1) 25%, transparent 25%) -50px 0,
+        linear-gradient(315deg, rgba(0,0,0,0.1) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%);
+    background-size: 100px 100px;
+    opacity: 0.2;
+    z-index: -1;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start; /* Alinea el botón a la izquierda */
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--bg-medium);
+    box-shadow: 0 2px 10px rgba(0, 188, 212, 0.2);
+    box-sizing: border-box;
+    position: relative;
+}
+
+.back-button {
+    background-color: var(--accent-blue);
+    color: var(--text-light);
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: #0c2a4d; /* Un azul más oscuro */
+    box-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
+}
+
+/* El .page-title CSS ha sido eliminado ya que el elemento fue quitado del HTML */
+
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.player-card {
+    background-color: var(--bg-medium);
+    border: 1px solid var(--accent-blue);
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 188, 212, 0.4);
+    display: flex;
+    flex-direction: row; /* Imagen a la izquierda, detalles a la derecha */
+    align-items: flex-start; /* Alinea arriba el contenido */
+    padding: 30px;
+    gap: 30px; /* Espacio entre la imagen y los detalles */
+    max-width: 800px;
+    width: 100%;
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.player-image-container {
+    flex-shrink: 0; /* No permite que la imagen se encoja */
+    width: 200px; /* Tamaño del cuadrado de la imagen */
+    height: 200px;
+    border: 3px solid var(--electric-blue);
+    border-radius: 8px;
+    overflow: hidden; /* Asegura que la imagen no se desborde */
+    box-shadow: 0 0 15px rgba(0, 188, 212, 0.7);
+}
+
+.player-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Recorta la imagen para que cubra el contenedor */
+    display: block;
+}
+
+.player-details {
+    flex-grow: 1; /* Permite que los detalles ocupen el espacio restante */
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Reducido ligeramente para más elementos */
+}
+
+.detail-item {
+    font-size: 1.1em;
+    color: var(--text-light);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-value {
+    color: var(--electric-blue);
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.5px;
+    font-size: 1.1em;
+}
+
+.detail-value.flag {
+    font-size: 1.5em; /* Tamaño del emoji de la bandera */
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas para las estadísticas */
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.stat-item {
+    background-color: var(--accent-blue);
+    padding: 12px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 188, 212, 0.3);
+}
+
+.stat-name {
+    display: block;
+    font-size: 0.9em;
+    color: var(--text-light);
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    display: block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.6em;
+    font-weight: bold;
+    color: var(--stat-value-color); /* Color específico para valores de stats */
+    text-shadow: 0 0 5px rgba(247, 224, 24, 0.5); /* Sombra para las stats */
+}
+
+/* ======================================================= */
+/* MEDIA QUERIES PARA RESPONSIVIDAD MÓVIL                 */
+/* ======================================================= */
+@media (max-width: 768px) {
+    .header {
+        justify-content: flex-start; /* Alinea el botón a la izquierda también en móvil */
+        padding-left: 15px; /* Ajuste para que el botón no esté tan pegado */
+    }
+
+    .back-button {
+        position: static; /* Eliminar posicionamiento absoluto en móvil si es el único elemento */
+        transform: none;
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+
+    /* El .page-title CSS para media query ha sido eliminado */
+
+    .player-card {
+        flex-direction: column; /* Apilar imagen y detalles en pantallas pequeñas */
+        align-items: center;
+        padding: 20px;
+        gap: 20px;
+        max-width: 95%;
+    }
+
+    .player-image-container {
+        width: 150px;
+        height: 150px;
+    }
+
+    .player-details {
+        text-align: center;
+        width: 100%;
+        gap: 10px; /* Ajuste para el gap en móvil */
+    }
+    
+    .detail-item {
+        justify-content: center; /* Centrar los detalles */
+        font-size: 1em;
+        gap: 8px;
+    }
+
+    .detail-value {
+        font-size: 1em;
+    }
+
+    .detail-value.flag {
+        font-size: 1.3em;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adaptar columnas */
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .stat-item {
+        padding: 10px;
+    }
+
+    .stat-name {
+        font-size: 0.8em;
+    }
+
+    .stat-value {
+        font-size: 1.4em;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px;
+    }
+
+    .back-button {
+        font-size: 0.75em;
+        padding: 5px 10px;
+    }
+
+    .player-card {
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .player-image-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .detail-item {
+        font-size: 0.9em;
+    }
+
+    .detail-value {
+        font-size: 0.9em;
+    }
+
+    .detail-value.flag {
+        font-size: 1.2em;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr; /* Una columna en pantallas muy pequeñas */
+    }
+
+    .stat-value {
+        font-size: 1.2em;
+    }
+}

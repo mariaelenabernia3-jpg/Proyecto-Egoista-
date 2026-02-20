@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Leaderboard - Blue Lock</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="main-wrapper">
+        <!-- Sección de Login -->
+        <div class="login-container">
+            <h2>ACCESO EXCLUSIVO</h2>
+            <form id="loginForm" action="/login" method="POST">
+                <div class="input-group">
+                    <label for="username">USUARIO</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">CONTRASEÑA</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="password" name="password" required>
+                        <span class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+                <button type="submit">INICIAR SESIÓN</button>
+            </form>
+        </div>
+
+        <!-- Nueva Sección: Leaderboard Global -->
+        <div class="global-leaderboard">
+            <h3>CLASIFICACIÓN GLOBAL</h3>
+            
+            <!-- Jugador: Kevin (Nagi) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper">
+                        <img src="nagi/nagi.png" alt="Nagi">
+                    </div>
+                    <span class="player-name">Kevin</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
+                </div>
+            </div>
+
+            <!-- Jugador: Mauricio (Isagi) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper">
+                        <img src="isagi/isagi.png" alt="Isagi">
+                    </div>
+                    <span class="player-name">Mauricio</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
+                </div>
+            </div>
+
+            <!-- Jugador: Yulien (Bachira) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper">
+                        <img src="bachira/bachira.png" alt="Bachira">
+                    </div>
+                    <span class="player-name">Yulien</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
+                </div>
+            </div>
+
+            <!-- Jugador: Manuel (Kunigami) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper">
+                        <img src="kunigami/kunigami.png" alt="Kunigami">
+                    </div>
+                    <span class="player-name">Manuel</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
+                </div>
+            </div>
+
+            <!-- Jugador: Ernesto (Rin) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper">
+                        <img src="rin/rin.png" alt="Rin">
+                    </div>
+                    <span class="player-name">Ernesto</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
+                </div>
+            </div>
+
+            <!-- Jugador: Deadpool (Gagamaru) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper">
+                        <img src="gagamaru/gagamaru.png" alt="Gagamaru">
+                    </div>
+                    <span class="player-name">Deadpool</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = passwordInput.value;
+
+            if (username === 'Ego' && password === '123') {
+                alert('¡ACCESO AUTORIZADO! BIENVENIDO, Ego.');
+            } else if (username === 'Nagi' && password === '7') {
+                window.location.href = 'nagi/nagi_dashboard.html';
+            } else if (username === 'Isagi' && password === '11') {
+                window.location.href = 'isagi/isagi_dashboard.html';
+            } else if (username === 'Bachira' && password === '8') {
+                window.location.href = 'bachira/bachira_dashboard.html';
+            } else if (username === 'Kunigami' && password === '9') {
+                window.location.href = 'kunigami/kunigami_dashboard.html';
+            } else if (username === 'Rin' && password === '10') {
+                window.location.href = 'rin/rin_dashboard.html';
+            } else if (username === 'Gagamaru' && password === '6') {
+                window.location.href = 'gagamaru/gagamaru_dashboard.html';
+            } else {
+                alert('CREDENCIALES INVÁLIDAS. INTÉNTALO DE NUEVO.');
+            }
+        });
+    </script>
+</body>
+</html>

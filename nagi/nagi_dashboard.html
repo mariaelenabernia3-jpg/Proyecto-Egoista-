@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Nagi - Estadísticas (Blue Lock)</title>
+    <link rel="stylesheet" href="nagi_dashboard_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="position-display">POSICIÓN: <span>0</span></div>
+        <div class="profile-area">
+            <div class="profile-icon" id="profileIcon">
+                <img src="" alt="Foto de perfil" class="profile-pic-preview" style="display: none;">
+                <i class="fas fa-user profile-default-icon"></i> 
+            </div>
+            <div class="profile-popup" id="profilePopup">
+                <h3>KEVIN</h3>
+                <p>Contraseña: 7</p>
+                <p class="profile-level">Nivel: <span>0</span></p>
+                <div class="xp-bar-container">
+                    <div class="xp-bar-fill" style="width: 0%;"></div>
+                    <span class="xp-text">0/100 XP</span>
+                </div>
+                <div class="profile-pic-uploader">
+                    <label for="profilePicInput" class="upload-button">
+                        <i class="fas fa-camera"></i> Cambiar Foto
+                    </label>
+                    <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <div class="dashboard-center-content">
+            <h1>BIENVENIDO KEVIN</h1>
+            <p class="call-to-action">QUÉ QUIERES HACER HOY?</p>
+            <div class="action-bubbles-container">
+                <a href="nagi_missions.html" class="action-bubble">MISIONES</a>
+                <a href="nagi_stats.html" class="action-bubble">ESTADÍSTICAS</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const profileIcon = document.getElementById('profileIcon');
+        const profilePopup = document.getElementById('profilePopup');
+        const profilePicInput = document.getElementById('profilePicInput');
+        const profilePicPreview = document.querySelector('.profile-pic-preview');
+        const profileDefaultIcon = document.querySelector('.profile-default-icon');
+
+        profileIcon.addEventListener('click', () => profilePopup.classList.toggle('active'));
+        document.addEventListener('click', (event) => {
+            if (!profileIcon.contains(event.target) && !profilePopup.contains(event.target)) {
+                profilePopup.classList.remove('active');
+            }
+        });
+        profilePicInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicPreview.src = e.target.result;
+                    profilePicPreview.style.display = 'block';
+                    profileDefaultIcon.style.display = 'none';
+                    profileIcon.style.backgroundImage = `url(${e.target.result})`;
+                    profileIcon.style.backgroundSize = 'cover';
+                    profileIcon.style.backgroundPosition = 'center';
+                    profileIcon.style.border = '2px solid var(--electric-blue)';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
