@@ -3,33 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Bachira - Estadísticas (Blue Lock)</title>
-    <link rel="stylesheet" href="bachira_dashboard_style.css">
+    <title>Dashboard - Kevin</title>
+    <link rel="stylesheet" href="nagi_dashboard_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="header">
-        <div class="position-display">POSICIÓN: <span>3</span></div>
+        <div class="position-display">POSICIÓN: <span id="pos-val">--</span></div>
         <div class="profile-area">
             <div class="profile-icon" id="profileIcon">
-                <img src="bachira.png" alt="Foto de perfil" class="profile-pic-preview" style="display: none;">
-                <i class="fas fa-user profile-default-icon"></i> 
+                <img src="" id="img-preview" class="profile-pic-preview" style="display: none;">
+                <i class="fas fa-user profile-default-icon" id="default-icon"></i> 
             </div>
             <div class="profile-popup" id="profilePopup">
-                <h3>YULIEN</h3>
-                <p>Contraseña: 8</p>
-                <p class="profile-level">Nivel: <span>0</span></p>
-                <!-- OFERTA (BID) DE YULIEN -->
-                <p class="profile-bid-popup">BID: $35,000,000</p>
+                <h3>KEVIN</h3>
+                <p>Contraseña: 7</p>
+                <p class="profile-level">Nivel: <span id="lvl-val">0</span></p>
+                <p class="profile-bid-popup" id="bid-val">BID: $0</p>
                 <div class="xp-bar-container">
-                    <div class="xp-bar-fill" style="width: 35%;"></div>
-                    <span class="xp-text">35/100 XP</span>
+                    <div class="xp-bar-fill" id="xp-bar" style="width: 0%;"></div>
+                    <span class="xp-text" id="xp-text">0/100 XP</span>
                 </div>
                 <div class="profile-pic-uploader">
-                    <label for="profilePicInput" class="upload-button">
-                        <i class="fas fa-camera"></i> Cambiar Foto
-                    </label>
+                    <label for="profilePicInput" class="upload-button"><i class="fas fa-camera"></i> Cambiar Foto</label>
                     <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
                 </div>
             </div>
@@ -38,174 +35,77 @@
 
     <main class="main-content">
         <div class="dashboard-center-content">
-            <h1>BIENVENIDO YULIEN</h1>
-            <p class="call-to-action">QUÉ QUIERES HACER HOY?</p>
+            <h1>BIENVENIDO KEVIN</h1>
             <div class="action-bubbles-container">
-                <a href="bachira_missions.html" class="action-bubble">MISIONES</a>
-                <a href="bachira_stats.html" class="action-bubble">ESTADÍSTICAS</a>
+                <a href="nagi_missions.html" class="action-bubble">MISIONES</a>
+                <a href="nagi_stats.html" class="action-bubble">ESTADÍSTICAS</a>
                 <div class="action-bubble" id="leaderboardBtn">LEADERBOARD</div>
             </div>
         </div>
     </main>
 
-    <!-- MODAL DE LEADERBOARD (Ordenado por Goles y con BID) -->
     <div class="coming-soon-modal" id="leaderboardModal">
         <div class="leaderboard-modal-content">
             <span class="close-button" id="closeLeaderboard">&times;</span>
             <h3 class="leaderboard-title">CLASIFICACIÓN GLOBAL</h3>
-
-            <!-- 1. Ernesto (Rin) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper"><img src="../rin/rin.png" alt="Rin"></div>
-                    <div class="player-text-details">
-                        <span class="player-name">Ernesto</span>
-                        <span class="player-bid">BID: $60,000,000</span>
-                    </div>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">5</span></div>
-                </div>
-            </div>
-
-            <!-- 2. Kevin (Nagi) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper"><img src="../nagi/nagi.png" alt="Nagi"></div>
-                    <div class="player-text-details">
-                        <span class="player-name">Kevin</span>
-                        <span class="player-bid">BID: $40,000,000</span>
-                    </div>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">3</span></div>
-                </div>
-            </div>
-
-            <!-- 3. Yulien (Bachira) - TU JUGADOR DESTACADO -->
-            <div class="player-row" style="border-left-color: #f7e018;">
-                <div class="player-info">
-                    <div class="player-img-wrapper"><img src="../bachira/bachira.png" alt="Bachira"></div>
-                    <div class="player-text-details">
-                        <span class="player-name" style="color: #f7e018;">Yulien</span>
-                        <span class="player-bid" style="color: #f7e018;">BID: $35,000,000</span>
-                    </div>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">3</span></div>
-                </div>
-            </div>
-
-            <!-- 4. Manuel (Kunigami) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper"><img src="../kunigami/kunigami.png" alt="Kunigami"></div>
-                    <div class="player-text-details">
-                        <span class="player-name">Manuel</span>
-                        <span class="player-bid">BID: $20,000,000</span>
-                    </div>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
-                </div>
-            </div>
-
-            <!-- 5. Mauricio (Isagi) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper"><img src="../isagi/isagi.png" alt="Isagi"></div>
-                    <div class="player-text-details">
-                        <span class="player-name">Mauricio</span>
-                        <span class="player-bid">BID: $15,000,000</span>
-                    </div>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
-                </div>
-            </div>
-
-            <!-- 6. Deadpool (Gagamaru) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper"><img src="../gagamaru/gagamaru.png" alt="Gagamaru"></div>
-                    <div class="player-text-details">
-                        <span class="player-name">Deadpool</span>
-                        <span class="player-bid">BID: $15,000,000</span>
-                    </div>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
-                </div>
-            </div>
+            <div id="modalList"></div>
         </div>
     </div>
 
     <script>
-        const profileIcon = document.getElementById('profileIcon');
-        const profilePopup = document.getElementById('profilePopup');
-        const profilePicInput = document.getElementById('profilePicInput');
-        const profilePicPreview = document.querySelector('.profile-pic-preview');
-        const profileDefaultIcon = document.querySelector('.profile-default-icon');
+        const myId = "Bachira"; 
 
-        const leaderboardBtn = document.getElementById('leaderboardBtn');
-        const leaderboardModal = document.getElementById('leaderboardModal');
-        const closeLeaderboard = document.getElementById('closeLeaderboard');
+        function updatePage() {
+            const players = JSON.parse(localStorage.getItem('blPlayersData'));
+            if (!players) return;
+            const me = players[myId];
 
-        profileIcon.addEventListener('click', () => profilePopup.classList.toggle('active'));
-        document.addEventListener('click', (event) => {
-            if (!profileIcon.contains(event.target) && !profilePopup.contains(event.target)) {
-                profilePopup.classList.remove('active');
+            // Cargar Foto Guardada
+            if (me.img) {
+                document.getElementById('img-preview').src = me.img;
+                document.getElementById('img-preview').style.display = 'block';
+                document.getElementById('default-icon').style.display = 'none';
+                document.getElementById('profileIcon').style.backgroundImage = `url(${me.img})`;
+                document.getElementById('profileIcon').style.backgroundSize = 'cover';
             }
+
+            document.getElementById('bid-val').textContent = "BID: $" + me.bid.toLocaleString();
+            document.getElementById('lvl-val').textContent = me.level;
+            document.getElementById('xp-bar').style.width = me.xp + "%";
+            document.getElementById('xp-text').textContent = me.xp + "/100 XP";
+
+            const sorted = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
+            document.getElementById('pos-val').textContent = sorted.findIndex(p => p.id === myId) + 1;
+
+            document.getElementById('modalList').innerHTML = sorted.map(p => `
+                <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold;' : ''}">
+                    <div class="player-info">
+                        <div class="player-img-wrapper"><img src="${p.img}" alt=""></div>
+                        <div class="player-text-details"><span class="player-name">${p.name}</span><span class="player-bid">BID: $${p.bid.toLocaleString()}</span></div>
+                    </div>
+                    <div class="player-stats-mini">
+                        <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                        <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('profilePicInput').addEventListener('change', (e) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const players = JSON.parse(localStorage.getItem('blPlayersData'));
+                players[myId].img = event.target.result;
+                localStorage.setItem('blPlayersData', JSON.stringify(players));
+                updatePage();
+            };
+            reader.readAsDataURL(e.target.files[0]);
         });
 
-        profilePicInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profilePicPreview.src = e.target.result;
-                    profilePicPreview.style.display = 'block';
-                    profileDefaultIcon.style.display = 'none';
-                    profileIcon.style.backgroundImage = `url(${e.target.result})`;
-                    profileIcon.style.backgroundSize = 'cover';
-                    profileIcon.style.backgroundPosition = 'center';
-                    profileIcon.style.border = '2px solid var(--electric-blue)';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        leaderboardBtn.addEventListener('click', () => {
-            leaderboardModal.style.display = 'flex';
-        });
-
-        closeLeaderboard.addEventListener('click', () => {
-            leaderboardModal.style.display = 'none';
-        });
-
-        window.addEventListener('click', (event) => {
-            if (event.target == leaderboardModal) {
-                leaderboardModal.style.display = 'none';
-            }
-        });
+        document.getElementById('profileIcon').onclick = () => document.getElementById('profilePopup').classList.toggle('active');
+        document.getElementById('leaderboardBtn').onclick = () => document.getElementById('leaderboardModal').style.display = 'flex';
+        document.getElementById('closeLeaderboard').onclick = () => document.getElementById('leaderboardModal').style.display = 'none';
+        window.onload = updatePage;
     </script>
 </body>
 </html>

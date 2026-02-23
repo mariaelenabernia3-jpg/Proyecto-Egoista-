@@ -3,62 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadísticas de Manuel (Kunigami) - Blue Lock</title>
+    <title>Estadísticas de Manuel - Blue Lock</title>
     <link rel="stylesheet" href="kunigami_stats_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="header">
-        <a href="kunigami_dashboard.html" class="back-button">
-            <i class="fas fa-arrow-left"></i> Volver al Dashboard
-        </a>
+        <a href="kunigami_dashboard.html" class="back-button"><i class="fas fa-arrow-left"></i> VOLVER</a>
     </div>
 
     <main class="main-content">
         <div class="player-card">
             <div class="player-image-container">
-                <img src="kunigami.png" alt="Imagen de Kunigami" class="player-image">
+                <img src="kunigami.png" alt="Manuel" class="player-image">
             </div>
             <div class="player-details">
                 <p class="detail-item">Nombre: <span class="detail-value">Manuel</span></p>
-                <p class="detail-item">Nacionalidad: <span class="detail-value flag">🇨🇺</span></p>
                 <p class="detail-item">Posición: <span class="detail-value">DC</span></p>
-                <p class="detail-item">Media General: <span class="detail-value">78</span></p>
+                <p class="detail-item">Media General: <span class="detail-value" id="stat-media">--</span></p>
                 
-                <p class="detail-item">Partidos Jugados: <span class="detail-value">3</span></p>
-                <p class="detail-item">Partidos Ganados: <span class="detail-value">2</span></p>
-                <p class="detail-item">Partidos Perdidos: <span class="detail-value">1</span></p>
-                <p class="detail-item">Goles: <span class="detail-value">1</span></p>
+                <div class="match-history-grid">
+                    <p>PJ: <span id="stat-pj">0</span></p>
+                    <p>PG: <span id="stat-pg">0</span></p>
+                    <p>PP: <span id="stat-pp">0</span></p>
+                    <p>GOLES: <span id="stat-g" style="color: gold;">0</span></p>
+                </div>
 
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-name">Ritmo</span>
-                        <span class="stat-value">80</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-name">Tiro</span>
-                        <span class="stat-value">95</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-name">Pase</span>
-                        <span class="stat-value">70</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-name">Regate</span>
-                        <span class="stat-value">75</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-name">Defensa</span>
-                        <span class="stat-value">65</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-name">Físico</span>
-                        <span class="stat-value">92</span>
-                    </div>
+                <div class="stats-grid" id="skills-grid">
+                    <!-- Habilidades dinámicas cargadas desde el Panel de Ego -->
                 </div>
             </div>
         </div>
     </main>
+
+    <script>
+        function loadStats() {
+            const data = JSON.parse(localStorage.getItem('blPlayersData'));
+            if (!data) return;
+            const me = data["Kunigami"];
+
+            document.getElementById('stat-media').textContent = me.stats.media;
+            document.getElementById('stat-pj').textContent = me.matchStats.pj;
+            document.getElementById('stat-pg').textContent = me.matchStats.pg;
+            document.getElementById('stat-pp').textContent = me.matchStats.pp;
+            document.getElementById('stat-g').textContent = me.matchStats.g;
+
+            const skills = [
+                {n: 'Ritmo', v: me.stats.ritmo},
+                {n: 'Tiro', v: me.stats.tiro},
+                {n: 'Pase', v: me.stats.pase},
+                {n: 'Regate', v: me.stats.regate},
+                {n: 'Defensa', v: me.stats.defensa},
+                {n: 'Físico', v: me.stats.fisico}
+            ];
+
+            document.getElementById('skills-grid').innerHTML = skills.map(s => `
+                <div class="stat-item">
+                    <span class="stat-name">${s.n}</span>
+                    <span class="stat-value">${s.v}</span>
+                </div>
+            `).join('');
+        }
+        document.addEventListener('DOMContentLoaded', loadStats);
+    </script>
 </body>
 </html>

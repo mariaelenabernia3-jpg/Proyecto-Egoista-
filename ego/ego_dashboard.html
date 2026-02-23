@@ -11,102 +11,109 @@
 <body>
     <div class="header">
         <div class="header-title">BLUE LOCK PROJECT</div>
-        <div class="profile-icon">EGO</div>
+        <a href="../index.html" class="logout-btn">CERRAR SESIÓN</a>
     </div>
 
     <main class="main-content">
-        <h1>GENERADOR DE EQUIPOS</h1>
-        <p class="subtitle">SISTEMA DE SELECCIÓN BALANCEADO</p>
-        <!-- Frase de Ego aquí -->
-        <div id="egoQuoteDashboard" class="ego-quote-dashboard"></div>
+        <h1>CONTROL ABSOLUTO</h1>
+        <div id="egoQuoteDashboard" class="ego-quote-dashboard">"El talento sin pulir es solo basura."</div>
 
-        <button id="generateBtn" class="generate-button">
-            <i class="fas fa-random"></i> INICIAR RULETA
-        </button>
+        <!-- SECCIÓN 1: RULETA FULL ALEATORIA -->
+        <div class="admin-section">
+            <h2>RULETA DE EQUIPOS (100% AZAR)</h2>
+            <button id="generateBtn" class="generate-button">
+                <i class="fas fa-random"></i> CREAR EQUIPOS
+            </button>
 
-        <div class="teams-container" id="teamsContainer" style="display: none;">
-            
-            <!-- EQUIPO A -->
-            <div class="team-card team-a">
-                <h2>EQUIPO A</h2>
-                <div class="team-members" id="teamAList">
-                    <!-- Los jugadores aparecerán aquí -->
+            <div class="teams-container" id="teamsContainer" style="display: none;">
+                <div class="team-card team-a">
+                    <h2 style="color: var(--accent-blue);">EQUIPO A</h2>
+                    <div class="team-members" id="teamAList"></div>
+                </div>
+                <div class="vs-divider">VS</div>
+                <div class="team-card team-b">
+                    <h2 style="color: var(--ego-red);">EQUIPO B</h2>
+                    <div class="team-members" id="teamBList"></div>
                 </div>
             </div>
+        </div>
 
-            <div class="vs-divider">VS</div>
+        <!-- SECCIÓN 2: EDITOR MAESTRO DE JUGADORES -->
+        <div class="admin-section">
+            <h2>EDITOR DE JUGADORES</h2>
+            <p style="color: #aaa; font-size: 0.9em; margin-bottom: 20px;">
+                Elige un jugador. El Dinero (BID), la Media General y el Ranking se calcularán <b>solos</b> al guardar.
+            </p>
 
-            <!-- EQUIPO B -->
-            <div class="team-card team-b">
-                <h2>EQUIPO B</h2>
-                <div class="team-members" id="teamBList">
-                    <!-- Los jugadores aparecerán aquí -->
+            <div class="editor-container">
+                <label for="playerSelect" style="color: var(--electric-blue); font-weight: bold;">SELECCIONAR JUGADOR:</label>
+                <select id="playerSelect" class="input-field" style="margin-bottom: 20px;">
+                    <option value="">-- Elige un Jugador --</option>
+                    <option value="Rin">Ernesto (Rin)</option>
+                    <option value="Nagi">Kevin (Nagi)</option>
+                    <option value="Bachira">Yulien (Bachira)</option>
+                    <option value="Kunigami">Manuel (Kunigami)</option>
+                    <option value="Isagi">Mauricio (Isagi)</option>
+                    <option value="Gagamaru">Deadpool (Gagamaru)</option>
+                </select>
+
+                <div id="editorForm" style="display: none;">
+                    
+                    <div class="editor-grid">
+                        <!-- RENDIMIENTO -->
+                        <div class="editor-box">
+                            <h3 style="color: var(--highlight-gold);">RENDIMIENTO</h3>
+                            <div class="input-row"><label>Partidos Jugados (PJ)</label><input type="number" id="edit_pj" class="input-field min-input"></div>
+                            <div class="input-row"><label>Ganados (PG)</label><input type="number" id="edit_pg" class="input-field min-input"></div>
+                            <div class="input-row"><label>Perdidos (PP)</label><input type="number" id="edit_pp" class="input-field min-input"></div>
+                            <div class="input-row"><label>Goles (G)</label><input type="number" id="edit_g" class="input-field min-input"></div>
+                        </div>
+
+                        <!-- ESTADÍSTICAS (SKILLS) -->
+                        <div class="editor-box">
+                            <h3 style="color: var(--electric-blue);">HABILIDADES</h3>
+                            <div class="input-row"><label>Ritmo</label><input type="number" id="edit_ritmo" class="input-field min-input"></div>
+                            <div class="input-row"><label>Tiro</label><input type="number" id="edit_tiro" class="input-field min-input"></div>
+                            <div class="input-row"><label>Pase</label><input type="number" id="edit_pase" class="input-field min-input"></div>
+                            <div class="input-row"><label>Regate</label><input type="number" id="edit_regate" class="input-field min-input"></div>
+                            <div class="input-row"><label>Defensa</label><input type="number" id="edit_defensa" class="input-field min-input"></div>
+                            <div class="input-row"><label>Físico</label><input type="number" id="edit_fisico" class="input-field min-input"></div>
+                        </div>
+                    </div>
+
+                    <button id="savePlayerBtn" class="save-button">GUARDAR Y RECALCULAR</button>
                 </div>
             </div>
-
         </div>
     </main>
 
     <script>
-        // --- DEFINICIÓN DE JUGADORES POR NIVEL (TIERS) ---
-        const tier1 = [
-            { name: "Ernesto (Rin)", img: "../rin/rin.png" },
-            { name: "Deadpool (Gagamaru)", img: "../gagamaru/gagamaru.png" }
-        ];
-        const tier2 = [
-            { name: "Kevin (Nagi)", img: "../nagi/nagi.png" },
-            { name: "Mauricio (Isagi)", img: "../isagi/isagi.png" }
-        ];
-        const tier3 = [
-            { name: "Manuel (Kunigami)", img: "../kunigami/kunigami.png" },
-            { name: "Yulien (Bachira)", img: "../bachira/bachira.png" }
-        ];
+        // --- BASE DE DATOS LOCAL ---
+        // Si no hay datos, carga los por defecto que hicimos la última vez.
+        const initialPlayersData = {
+            "Rin": { name: "Ernesto", id: "Rin", img: "../rin/rin.png", position: "DC", stats: { ritmo: 82, tiro: 90, pase: 85, regate: 88, defensa: 60, fisico: 78, media: 81 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 5 }, xp: 35, level: 0, bid: 60000000 },
+            "Nagi": { name: "Kevin", id: "Nagi", img: "../nagi/nagi.png", position: "ED", stats: { ritmo: 60, tiro: 80, pase: 70, regate: 68, defensa: 70, fisico: 60, media: 68 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 3 }, xp: 35, level: 0, bid: 40000000 },
+            "Bachira": { name: "Yulien", id: "Bachira", img: "../bachira/bachira.png", position: "ED", stats: { ritmo: 84, tiro: 78, pase: 88, regate: 95, defensa: 40, fisico: 60, media: 74 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 3 }, xp: 35, level: 0, bid: 35000000 },
+            "Kunigami": { name: "Manuel", id: "Kunigami", img: "../kunigami/kunigami.png", position: "DC", stats: { ritmo: 80, tiro: 95, pase: 70, regate: 75, defensa: 65, fisico: 92, media: 78 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 1 }, xp: 15, level: 0, bid: 20000000 },
+            "Isagi": { name: "Mauricio", id: "Isagi", img: "../isagi/isagi.png", position: "DC", stats: { ritmo: 75, tiro: 82, pase: 80, regate: 72, defensa: 50, fisico: 65, media: 71 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 1 }, xp: 15, level: 0, bid: 15000000 },
+            "Gagamaru": { name: "Deadpool", id: "Gagamaru", img: "../gagamaru/gagamaru.png", position: "PO", stats: { ritmo: 85, tiro: 70, pase: 60, regate: 65, defensa: 88, fisico: 92, media: 77 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 1 }, xp: 15, level: 0, bid: 15000000 }
+        };
 
+        let players = JSON.parse(localStorage.getItem('blPlayersData')) || initialPlayersData;
+
+        // --- 1. LÓGICA DE LA RULETA (FULL AZAR) ---
         const generateBtn = document.getElementById('generateBtn');
         const teamsContainer = document.getElementById('teamsContainer');
         const teamAList = document.getElementById('teamAList');
         const teamBList = document.getElementById('teamBList');
-        const egoQuoteDashboardDiv = document.getElementById('egoQuoteDashboard');
 
-        // Frases de Ego Jinpachi (iguales que en el login, o puedes poner otras específicas)
-        const egoQuotes = [
-            "El talento sin pulir es solo basura.",
-            "Despierta, delantero.",
-            "Rompe tus cadenas.",
-            "Solo un loco puede cambiar el mundo.",
-            "El fútbol es el deporte de los genios egoístas.",
-            "El gol es el producto de un ego inmenso."
-        ];
-
-        // Función para mostrar una frase aleatoria
-        function displayRandomEgoQuoteDashboard() {
-            const randomIndex = Math.floor(Math.random() * egoQuotes.length);
-            egoQuoteDashboardDiv.textContent = `"${egoQuotes[randomIndex]}"`;
-        }
-
-        // Mostrar una frase al cargar la página del dashboard
-        document.addEventListener('DOMContentLoaded', displayRandomEgoQuoteDashboard);
-
-
-        // Función para crear el HTML de un jugador
         function createPlayerHTML(player) {
             return `
                 <div class="player-slot animate-pop">
-                    <div class="player-img">
-                        <img src="${player.img}" alt="${player.name}">
-                    </div>
+                    <div class="player-img"><img src="${player.img}" alt="${player.name}"></div>
                     <span>${player.name}</span>
                 </div>
             `;
-        }
-
-        // Función "Lanzar Moneda" para decidir quién va a qué equipo
-        function splitPair(pair) {
-            if (Math.random() < 0.5) {
-                return [pair[0], pair[1]];
-            } else {
-                return [pair[1], pair[0]];
-            }
         }
 
         generateBtn.addEventListener('click', () => {
@@ -116,27 +123,85 @@
 
             setTimeout(() => {
                 teamsContainer.style.display = 'flex';
-                const pair1 = splitPair(tier1);
-                const pair2 = splitPair(tier2);
-                const pair3 = splitPair(tier3);
+                
+                // Sacar todos los jugadores en una lista simple
+                let allPlayers = Object.values(players);
+                
+                // Mezclar la lista completamente al azar (Fisher-Yates Shuffle)
+                for (let i = allPlayers.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allPlayers[i], allPlayers[j]] = [allPlayers[j], allPlayers[i]];
+                }
 
-                const teamA = [pair1[0], pair2[0], pair3[0]];
-                const teamB = [pair1[1], pair2[1], pair3[1]];
+                // Partir la lista a la mitad
+                const teamA = allPlayers.slice(0, 3);
+                const teamB = allPlayers.slice(3, 6);
 
-                setTimeout(() => {
-                    teamAList.innerHTML += createPlayerHTML(teamA[0]);
-                    teamBList.innerHTML += createPlayerHTML(teamB[0]);
-                }, 100);
-                setTimeout(() => {
-                    teamAList.innerHTML += createPlayerHTML(teamA[1]);
-                    teamBList.innerHTML += createPlayerHTML(teamB[1]);
-                }, 500);
-                setTimeout(() => {
-                    teamAList.innerHTML += createPlayerHTML(teamA[2]);
-                    teamBList.innerHTML += createPlayerHTML(teamB[2]);
-                }, 900);
+                // Mostrar con efecto
+                setTimeout(() => { teamAList.innerHTML += createPlayerHTML(teamA[0]); teamBList.innerHTML += createPlayerHTML(teamB[0]); }, 100);
+                setTimeout(() => { teamAList.innerHTML += createPlayerHTML(teamA[1]); teamBList.innerHTML += createPlayerHTML(teamB[1]); }, 400);
+                setTimeout(() => { teamAList.innerHTML += createPlayerHTML(teamA[2]); teamBList.innerHTML += createPlayerHTML(teamB[2]); }, 700);
 
             }, 100); 
+        });
+
+        // --- 2. LÓGICA DEL EDITOR MAESTRO ---
+        const playerSelect = document.getElementById('playerSelect');
+        const editorForm = document.getElementById('editorForm');
+        const savePlayerBtn = document.getElementById('savePlayerBtn');
+
+        // Cargar datos al seleccionar a un jugador
+        playerSelect.addEventListener('change', () => {
+            const pId = playerSelect.value;
+            if(pId === "") {
+                editorForm.style.display = 'none';
+                return;
+            }
+            editorForm.style.display = 'block';
+            const p = players[pId];
+
+            // Rellenar casillas
+            document.getElementById('edit_pj').value = p.matchStats.pj;
+            document.getElementById('edit_pg').value = p.matchStats.pg;
+            document.getElementById('edit_pp').value = p.matchStats.pp;
+            document.getElementById('edit_g').value = p.matchStats.g;
+
+            document.getElementById('edit_ritmo').value = p.stats.ritmo;
+            document.getElementById('edit_tiro').value = p.stats.tiro;
+            document.getElementById('edit_pase').value = p.stats.pase;
+            document.getElementById('edit_regate').value = p.stats.regate;
+            document.getElementById('edit_defensa').value = p.stats.defensa;
+            document.getElementById('edit_fisico').value = p.stats.fisico;
+        });
+
+        // Guardar y Auto-calcular
+        savePlayerBtn.addEventListener('click', () => {
+            const pId = playerSelect.value;
+            const p = players[pId];
+
+            // 1. Guardar los datos escritos
+            p.matchStats.pj = parseInt(document.getElementById('edit_pj').value) || 0;
+            p.matchStats.pg = parseInt(document.getElementById('edit_pg').value) || 0;
+            p.matchStats.pp = parseInt(document.getElementById('edit_pp').value) || 0;
+            p.matchStats.g = parseInt(document.getElementById('edit_g').value) || 0;
+
+            p.stats.ritmo = parseInt(document.getElementById('edit_ritmo').value) || 0;
+            p.stats.tiro = parseInt(document.getElementById('edit_tiro').value) || 0;
+            p.stats.pase = parseInt(document.getElementById('edit_pase').value) || 0;
+            p.stats.regate = parseInt(document.getElementById('edit_regate').value) || 0;
+            p.stats.defensa = parseInt(document.getElementById('edit_defensa').value) || 0;
+            p.stats.fisico = parseInt(document.getElementById('edit_fisico').value) || 0;
+
+            // 2. AUTO CÁLCULO DE DINERO (10M por gol, 5M por victoria)
+            p.bid = (p.matchStats.g * 10000000) + (p.matchStats.pg * 5000000);
+
+            // 3. AUTO CÁLCULO DE MEDIA (Promedio de las 6 stats)
+            p.stats.media = Math.round((p.stats.ritmo + p.stats.tiro + p.stats.pase + p.stats.regate + p.stats.defensa + p.stats.fisico) / 6);
+
+            // Guardar en la base de datos del navegador
+            localStorage.setItem('blPlayersData', JSON.stringify(players));
+            
+            alert(`¡Datos de ${p.name} actualizados!\nNuevo Valor de Oferta: $${p.bid.toLocaleString()}\nNueva Media: ${p.stats.media}\nEl Leaderboard se ha reordenado solo.`);
         });
     </script>
 </body>
