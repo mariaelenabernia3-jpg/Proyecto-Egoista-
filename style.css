@@ -7,31 +7,25 @@
     --electric-blue: #00bcd4;
     --text-light: #e0e0e0;
     --text-muted: #888;
-    --highlight-gold: #f7e018;
-    --bid-color: #ffd700; /* Dorado para las ofertas */
 }
 
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-light);
-    min-height: 100vh;
+    height: 100vh;
     margin: 0;
-    overflow-x: hidden;
-    position: relative;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    padding: 20px;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
 }
 
 body::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0; width: 100%; height: 100%;
     background: 
         radial-gradient(circle at 10% 20%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 90% 80%, rgba(0, 188, 212, 0.1) 0%, transparent 50%),
@@ -46,21 +40,16 @@ body::before {
 
 .main-wrapper {
     width: 100%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    max-width: 400px;
+    padding: 20px;
     z-index: 1;
 }
 
-/* --- ESTILOS DEL LOGIN --- */
 .login-container {
     background-color: var(--bg-medium);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 30px rgba(0, 188, 212, 0.2);
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 40px rgba(0, 188, 212, 0.3);
     border: 1px solid var(--accent-blue);
     text-align: center;
 }
@@ -68,54 +57,47 @@ body::before {
 h2 {
     font-family: 'Orbitron', sans-serif;
     color: var(--electric-blue);
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-size: 1.8em;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
+    letter-spacing: 2px;
 }
 
 .ego-quote {
-    font-family: 'Montserrat', sans-serif;
     font-style: italic;
     color: var(--text-muted);
-    font-size: 0.9em;
-    margin-bottom: 25px;
-    padding: 0 10px;
+    font-size: 0.85em;
+    margin-bottom: 30px;
 }
 
-
 .input-group { margin-bottom: 20px; text-align: left; }
-.input-group label { display: block; margin-bottom: 8px; color: var(--text-light); font-weight: bold; font-size: 0.9em; letter-spacing: 1px; }
-.password-input-wrapper { position: relative; width: 100%; }
+.input-group label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.8em; letter-spacing: 1px; }
 
-.input-group input[type="text"],
-.input-group input[type="password"] {
+.password-input-wrapper { position: relative; }
+
+input[type="text"], input[type="password"] {
     width: 100%;
     padding: 12px;
-    padding-right: 45px;
     border: 1px solid var(--accent-blue);
     border-radius: 6px;
     background-color: var(--bg-dark);
-    color: var(--text-light);
+    color: white;
     font-size: 1em;
     box-sizing: border-box;
-    transition: all 0.3s ease;
     outline: none;
 }
 
-.input-group input:focus { border-color: var(--electric-blue); box-shadow: 0 0 10px rgba(0, 188, 212, 0.4); background-color: #111b2d; }
+input:focus { border-color: var(--electric-blue); box-shadow: 0 0 10px rgba(0, 188, 212, 0.4); }
 
 .toggle-password {
     position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
-    cursor: pointer; color: var(--text-muted); font-size: 1em;
+    cursor: pointer; color: var(--text-muted);
 }
-.toggle-password:hover { color: var(--electric-blue); }
 
 button {
     background-color: var(--electric-blue);
     color: var(--bg-dark);
-    padding: 12px 20px;
+    padding: 15px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -123,96 +105,8 @@ button {
     font-weight: bold;
     width: 100%;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.3);
-}
-button:hover { background-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 188, 212, 0.6); transform: translateY(-2px); }
-
-/* --- LEADERBOARD STYLES --- */
-.global-leaderboard {
-    background-color: var(--bg-medium);
-    border-radius: 10px;
-    border: 1px solid var(--accent-blue);
-    padding: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    letter-spacing: 2px;
+    transition: 0.3s;
 }
 
-.global-leaderboard h3 {
-    font-family: 'Orbitron', sans-serif;
-    color: var(--text-light);
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.4em;
-    border-bottom: 2px solid var(--accent-blue);
-    padding-bottom: 10px;
-    letter-spacing: 1px;
-}
-
-.player-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(15, 52, 96, 0.5);
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    transition: transform 0.2s;
-    border-left: 3px solid var(--electric-blue);
-}
-
-.player-row:hover { transform: translateX(5px); background-color: var(--accent-blue); }
-
-.player-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-grow: 1;
-}
-
-.player-text-details { /* NUEVO CONTENEDOR PARA NOMBRE Y BID */
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.player-img-wrapper {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid var(--electric-blue);
-    flex-shrink: 0;
-}
-
-.player-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-
-.player-name { font-weight: bold; font-size: 1.1em; color: var(--text-light); text-transform: uppercase; }
-
-.player-bid { /* NUEVO ESTILO PARA LA OFERTA */
-    font-family: 'Orbitron', sans-serif;
-    font-size: 0.7em;
-    color: var(--bid-color);
-    margin-top: 2px;
-    letter-spacing: 0.5px;
-}
-
-.player-stats-mini { display: flex; gap: 10px; }
-
-.stat-box { display: flex; flex-direction: column; align-items: center; min-width: 30px; }
-.stat-box .label { font-size: 0.65em; color: var(--text-muted); font-weight: bold; }
-.stat-box .val { font-family: 'Orbitron', sans-serif; font-size: 1.1em; font-weight: bold; color: var(--text-light); }
-.stat-box.highlight .val { color: var(--highlight-gold); text-shadow: 0 0 5px rgba(247, 224, 24, 0.3); }
-
-@media (max-width: 480px) {
-    .main-wrapper { padding: 0 5px; }
-    .login-container, .global-leaderboard { padding: 20px 15px; }
-    .ego-quote { font-size: 0.8em; margin-bottom: 20px; }
-    .player-row { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .player-stats-mini { width: 100%; justify-content: space-between; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); }
-    
-    .player-text-details { align-items: center; } /* Centrar nombre y bid en móvil si se apila */
-    .player-name { font-size: 1em; }
-    .player-bid { font-size: 0.65em; }
-}
+button:hover { background-color: #00e5ff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4); }
