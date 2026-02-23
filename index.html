@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login & Leaderboard - Blue Lock</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Fuentes de Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -15,6 +13,8 @@
         <!-- Sección de Login -->
         <div class="login-container">
             <h2>ACCESO EXCLUSIVO</h2>
+            <div id="egoQuote" class="ego-quote"></div>
+            
             <form id="loginForm" action="/login" method="POST">
                 <div class="input-group">
                     <label for="username">USUARIO</label>
@@ -37,11 +37,14 @@
         <div class="global-leaderboard">
             <h3>CLASIFICACIÓN GLOBAL</h3>
             
-            <!-- 1. Ernesto (Rin) - 5 Goles -->
+            <!-- 1. Ernesto (Rin) -->
             <div class="player-row">
                 <div class="player-info">
                     <div class="player-img-wrapper"><img src="rin/rin.png" alt="Rin"></div>
-                    <span class="player-name">Ernesto</span>
+                    <div class="player-text-details">
+                        <span class="player-name">Ernesto</span>
+                        <span class="player-bid">BID: $60,000,000</span> <!-- NUEVO -->
+                    </div>
                 </div>
                 <div class="player-stats-mini">
                     <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
@@ -51,11 +54,14 @@
                 </div>
             </div>
 
-            <!-- 2. Kevin (Nagi) - 3 Goles (Desempate: 2 Victorias) -->
+            <!-- 2. Kevin (Nagi) -->
             <div class="player-row">
                 <div class="player-info">
                     <div class="player-img-wrapper"><img src="nagi/nagi.png" alt="Nagi"></div>
-                    <span class="player-name">Kevin</span>
+                    <div class="player-text-details">
+                        <span class="player-name">Kevin</span>
+                        <span class="player-bid">BID: $40,000,000</span> <!-- NUEVO -->
+                    </div>
                 </div>
                 <div class="player-stats-mini">
                     <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
@@ -65,11 +71,14 @@
                 </div>
             </div>
 
-            <!-- 3. Yulien (Bachira) - 3 Goles (Desempate: 1 Victoria) -->
+            <!-- 3. Yulien (Bachira) -->
             <div class="player-row">
                 <div class="player-info">
                     <div class="player-img-wrapper"><img src="bachira/bachira.png" alt="Bachira"></div>
-                    <span class="player-name">Yulien</span>
+                    <div class="player-text-details">
+                        <span class="player-name">Yulien</span>
+                        <span class="player-bid">BID: $35,000,000</span> <!-- NUEVO -->
+                    </div>
                 </div>
                 <div class="player-stats-mini">
                     <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
@@ -79,11 +88,14 @@
                 </div>
             </div>
 
-            <!-- 4. Manuel (Kunigami) - 1 Gol (Desempate: 2 Victorias) -->
+            <!-- 4. Manuel (Kunigami) -->
             <div class="player-row">
                 <div class="player-info">
                     <div class="player-img-wrapper"><img src="kunigami/kunigami.png" alt="Kunigami"></div>
-                    <span class="player-name">Manuel</span>
+                    <div class="player-text-details">
+                        <span class="player-name">Manuel</span>
+                        <span class="player-bid">BID: $20,000,000</span> <!-- NUEVO -->
+                    </div>
                 </div>
                 <div class="player-stats-mini">
                     <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
@@ -93,11 +105,14 @@
                 </div>
             </div>
 
-            <!-- 5. Mauricio (Isagi) - 1 Gol (Desempate: 1 Victoria) -->
+            <!-- 5. Mauricio (Isagi) -->
             <div class="player-row">
                 <div class="player-info">
                     <div class="player-img-wrapper"><img src="isagi/isagi.png" alt="Isagi"></div>
-                    <span class="player-name">Mauricio</span>
+                    <div class="player-text-details">
+                        <span class="player-name">Mauricio</span>
+                        <span class="player-bid">BID: $15,000,000</span> <!-- NUEVO -->
+                    </div>
                 </div>
                 <div class="player-stats-mini">
                     <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
@@ -107,11 +122,14 @@
                 </div>
             </div>
 
-            <!-- 6. Deadpool (Gagamaru) - 1 Gol (Desempate: 1 Victoria) -->
+            <!-- 6. Deadpool (Gagamaru) -->
             <div class="player-row">
                 <div class="player-info">
                     <div class="player-img-wrapper"><img src="gagamaru/gagamaru.png" alt="Gagamaru"></div>
-                    <span class="player-name">Deadpool</span>
+                    <div class="player-text-details">
+                        <span class="player-name">Deadpool</span>
+                        <span class="player-bid">BID: $15,000,000</span> <!-- NUEVO -->
+                    </div>
                 </div>
                 <div class="player-stats-mini">
                     <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
@@ -127,8 +145,23 @@
     <script>
         const passwordInput = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
+        const egoQuoteDiv = document.getElementById('egoQuote');
 
-        // Mostrar/Ocultar contraseña
+        const egoQuotes = [
+            "El talento sin pulir es solo basura.",
+            "Despierta, delantero.",
+            "Rompe tus cadenas.",
+            "Solo un loco puede cambiar el mundo.",
+            "El fútbol es el deporte de los genios egoístas.",
+            "El gol es el producto de un ego inmenso."
+        ];
+
+        function displayRandomEgoQuote() {
+            const randomIndex = Math.floor(Math.random() * egoQuotes.length);
+            egoQuoteDiv.textContent = `"${egoQuotes[randomIndex]}"`;
+        }
+        document.addEventListener('DOMContentLoaded', displayRandomEgoQuote);
+
         togglePassword.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
@@ -136,7 +169,6 @@
             this.querySelector('i').classList.toggle('fa-eye-slash');
         });
 
-        // Lógica de Login
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;

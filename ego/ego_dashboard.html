@@ -17,6 +17,8 @@
     <main class="main-content">
         <h1>GENERADOR DE EQUIPOS</h1>
         <p class="subtitle">SISTEMA DE SELECCIÓN BALANCEADO</p>
+        <!-- Frase de Ego aquí -->
+        <div id="egoQuoteDashboard" class="ego-quote-dashboard"></div>
 
         <button id="generateBtn" class="generate-button">
             <i class="fas fa-random"></i> INICIAR RULETA
@@ -47,20 +49,14 @@
 
     <script>
         // --- DEFINICIÓN DE JUGADORES POR NIVEL (TIERS) ---
-        
-        // Tier 1: Los más duros
         const tier1 = [
             { name: "Ernesto (Rin)", img: "../rin/rin.png" },
             { name: "Deadpool (Gagamaru)", img: "../gagamaru/gagamaru.png" }
         ];
-
-        // Tier 2: Nivel medio
         const tier2 = [
             { name: "Kevin (Nagi)", img: "../nagi/nagi.png" },
             { name: "Mauricio (Isagi)", img: "../isagi/isagi.png" }
         ];
-
-        // Tier 3: Los peores (según tu criterio)
         const tier3 = [
             { name: "Manuel (Kunigami)", img: "../kunigami/kunigami.png" },
             { name: "Yulien (Bachira)", img: "../bachira/bachira.png" }
@@ -70,15 +66,27 @@
         const teamsContainer = document.getElementById('teamsContainer');
         const teamAList = document.getElementById('teamAList');
         const teamBList = document.getElementById('teamBList');
+        const egoQuoteDashboardDiv = document.getElementById('egoQuoteDashboard');
 
-        // Función para mezclar un array (Fisher-Yates shuffle)
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+        // Frases de Ego Jinpachi (iguales que en el login, o puedes poner otras específicas)
+        const egoQuotes = [
+            "El talento sin pulir es solo basura.",
+            "Despierta, delantero.",
+            "Rompe tus cadenas.",
+            "Solo un loco puede cambiar el mundo.",
+            "El fútbol es el deporte de los genios egoístas.",
+            "El gol es el producto de un ego inmenso."
+        ];
+
+        // Función para mostrar una frase aleatoria
+        function displayRandomEgoQuoteDashboard() {
+            const randomIndex = Math.floor(Math.random() * egoQuotes.length);
+            egoQuoteDashboardDiv.textContent = `"${egoQuotes[randomIndex]}"`;
         }
+
+        // Mostrar una frase al cargar la página del dashboard
+        document.addEventListener('DOMContentLoaded', displayRandomEgoQuoteDashboard);
+
 
         // Función para crear el HTML de un jugador
         function createPlayerHTML(player) {
@@ -92,43 +100,43 @@
             `;
         }
 
+        // Función "Lanzar Moneda" para decidir quién va a qué equipo
+        function splitPair(pair) {
+            if (Math.random() < 0.5) {
+                return [pair[0], pair[1]];
+            } else {
+                return [pair[1], pair[0]];
+            }
+        }
+
         generateBtn.addEventListener('click', () => {
-            // Mostrar contenedor
-            teamsContainer.style.display = 'flex';
-            
-            // Limpiar listas anteriores
+            teamsContainer.style.display = 'none';
             teamAList.innerHTML = '';
             teamBList.innerHTML = '';
 
-            // 1. Mezclar cada Tier individualmente
-            // Esto asegura que Rin no siempre vaya al equipo A, puede ir al B aleatoriamente.
-            const shuffledTier1 = shuffle([...tier1]);
-            const shuffledTier2 = shuffle([...tier2]);
-            const shuffledTier3 = shuffle([...tier3]);
-
-            // 2. Asignar equipos (Equilibrado: 1 de cada Tier por equipo)
-            const teamA = [shuffledTier1[0], shuffledTier2[0], shuffledTier3[0]];
-            const teamB = [shuffledTier1[1], shuffledTier2[1], shuffledTier3[1]];
-
-            // 3. Renderizar con un pequeño retraso para efecto visual
-            
-            // Insertar Tier 1
             setTimeout(() => {
-                teamAList.innerHTML += createPlayerHTML(teamA[0]);
-                teamBList.innerHTML += createPlayerHTML(teamB[0]);
-            }, 100);
+                teamsContainer.style.display = 'flex';
+                const pair1 = splitPair(tier1);
+                const pair2 = splitPair(tier2);
+                const pair3 = splitPair(tier3);
 
-            // Insertar Tier 2
-            setTimeout(() => {
-                teamAList.innerHTML += createPlayerHTML(teamA[1]);
-                teamBList.innerHTML += createPlayerHTML(teamB[1]);
-            }, 600);
+                const teamA = [pair1[0], pair2[0], pair3[0]];
+                const teamB = [pair1[1], pair2[1], pair3[1]];
 
-            // Insertar Tier 3
-            setTimeout(() => {
-                teamAList.innerHTML += createPlayerHTML(teamA[2]);
-                teamBList.innerHTML += createPlayerHTML(teamB[2]);
-            }, 1100);
+                setTimeout(() => {
+                    teamAList.innerHTML += createPlayerHTML(teamA[0]);
+                    teamBList.innerHTML += createPlayerHTML(teamB[0]);
+                }, 100);
+                setTimeout(() => {
+                    teamAList.innerHTML += createPlayerHTML(teamA[1]);
+                    teamBList.innerHTML += createPlayerHTML(teamB[1]);
+                }, 500);
+                setTimeout(() => {
+                    teamAList.innerHTML += createPlayerHTML(teamA[2]);
+                    teamBList.innerHTML += createPlayerHTML(teamB[2]);
+                }, 900);
+
+            }, 100); 
         });
     </script>
 </body>

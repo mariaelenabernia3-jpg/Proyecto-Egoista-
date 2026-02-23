@@ -8,6 +8,7 @@
     --text-light: #e0e0e0;
     --text-muted: #888;
     --highlight-gold: #f7e018;
+    --bid-color: #ffd700; /* Dorado para las ofertas */
 }
 
 body {
@@ -54,6 +55,7 @@ body::before {
     z-index: 1;
 }
 
+/* --- ESTILOS DEL LOGIN --- */
 .login-container {
     background-color: var(--bg-medium);
     padding: 30px;
@@ -66,12 +68,22 @@ body::before {
 h2 {
     font-family: 'Orbitron', sans-serif;
     color: var(--electric-blue);
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     font-size: 1.8em;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
 }
+
+.ego-quote {
+    font-family: 'Montserrat', sans-serif;
+    font-style: italic;
+    color: var(--text-muted);
+    font-size: 0.9em;
+    margin-bottom: 25px;
+    padding: 0 10px;
+}
+
 
 .input-group { margin-bottom: 20px; text-align: left; }
 .input-group label { display: block; margin-bottom: 8px; color: var(--text-light); font-weight: bold; font-size: 0.9em; letter-spacing: 1px; }
@@ -152,7 +164,18 @@ button:hover { background-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 188, 212,
 
 .player-row:hover { transform: translateX(5px); background-color: var(--accent-blue); }
 
-.player-info { display: flex; align-items: center; gap: 12px; flex-grow: 1; }
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+.player-text-details { /* NUEVO CONTENEDOR PARA NOMBRE Y BID */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
 .player-img-wrapper {
     width: 45px;
@@ -167,6 +190,14 @@ button:hover { background-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 188, 212,
 
 .player-name { font-weight: bold; font-size: 1.1em; color: var(--text-light); text-transform: uppercase; }
 
+.player-bid { /* NUEVO ESTILO PARA LA OFERTA */
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7em;
+    color: var(--bid-color);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+}
+
 .player-stats-mini { display: flex; gap: 10px; }
 
 .stat-box { display: flex; flex-direction: column; align-items: center; min-width: 30px; }
@@ -176,6 +207,12 @@ button:hover { background-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 188, 212,
 
 @media (max-width: 480px) {
     .main-wrapper { padding: 0 5px; }
+    .login-container, .global-leaderboard { padding: 20px 15px; }
+    .ego-quote { font-size: 0.8em; margin-bottom: 20px; }
     .player-row { flex-direction: column; align-items: flex-start; gap: 10px; }
     .player-stats-mini { width: 100%; justify-content: space-between; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); }
+    
+    .player-text-details { align-items: center; } /* Centrar nombre y bid en móvil si se apila */
+    .player-name { font-size: 1em; }
+    .player-bid { font-size: 0.65em; }
 }

@@ -8,6 +8,7 @@
     --text-light: #e0e0e0;
     --text-muted: #888;
     --error-red: #e94560;
+    --bid-color: #ffd700; /* Dorado para las ofertas */ /* NUEVO COLOR */
 }
 
 body {
@@ -108,6 +109,15 @@ body::before {
 .profile-popup p { color: var(--text-light); font-size: 0.9em; margin-bottom: 10px; }
 .profile-level { color: var(--text-light); font-size: 1em; margin-bottom: 15px; font-weight: bold; }
 
+/* NUEVO ESTILO PARA LA OFERTA (BID) EN EL POPUP */
+.profile-bid-popup {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.9em;
+    color: var(--bid-color); /* Dorado para las ofertas */
+    margin-bottom: 15px; /* Espacio debajo de la oferta */
+    letter-spacing: 0.5px;
+}
+
 .xp-bar-container {
     width: 90%; height: 15px; background-color: var(--accent-blue);
     border-radius: 7px; margin-bottom: 15px; position: relative;
@@ -174,10 +184,28 @@ body::before {
     margin-bottom: 10px; border-left: 3px solid var(--electric-blue);
 }
 
-.player-info { display: flex; align-items: center; gap: 10px; flex-grow: 1; }
+.player-info { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    flex-grow: 1; 
+}
+.player-text-details { /* ESTILO AÑADIDO PARA EL MODAL */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 .player-img-wrapper { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; border: 2px solid var(--electric-blue); flex-shrink: 0; }
 .player-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 .player-name { font-weight: bold; font-size: 0.9em; color: var(--text-light); text-transform: uppercase; }
+.player-bid { /* ESTILO AÑADIDO PARA EL MODAL */
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7em;
+    color: var(--bid-color);
+    margin-top: 2px;
+    letter-spacing: 0.5px;
+}
 
 .player-stats-mini { display: flex; gap: 8px; }
 .stat-box { display: flex; flex-direction: column; align-items: center; min-width: 25px; }
@@ -189,10 +217,20 @@ body::before {
     .header { padding: 15px; } .position-display { font-size: 1.2em; } .profile-icon { width: 40px; height: 40px; }
     .profile-default-icon { font-size: 1.8em; } .profile-popup { top: 55px; width: 180px; padding: 15px; }
     .profile-popup h3 { font-size: 1.2em; } .profile-popup p { font-size: 0.8em; }
-    .profile-level { font-size: 0.9em; margin-bottom: 12px; } .xp-bar-container { height: 12px; width: 90%; margin-bottom: 12px; }
+    .profile-level { font-size: 0.9em; margin-bottom: 12px; }
+    .profile-bid-popup { font-size: 0.8em; margin-bottom: 12px; } /* RESPONSIVO */
+    .xp-bar-container { height: 12px; width: 90%; margin-bottom: 12px; }
     .xp-text { font-size: 0.7em; } .profile-pic-uploader .upload-button { padding: 6px 12px; font-size: 0.8em; }
     .main-content h1 { font-size: 2.2em; letter-spacing: 2px; margin-bottom: 15px; } .call-to-action { font-size: 1.1em; margin-bottom: 30px; }
     .action-bubbles-container { gap: 20px; flex-direction: column; align-items: center; } .action-bubble { padding: 20px 30px; font-size: 1.2em; min-width: 80%; }
+
+    /* Modal responsivo */
+    .leaderboard-modal-content { padding: 15px; }
+    .leaderboard-title { font-size: 1.3em; }
+    .player-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .player-stats-mini { width: 100%; justify-content: space-between; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .player-name { font-size: 1em; }
+    .player-bid { font-size: 0.65em; }
 }
 
 @media (max-width: 480px) {
@@ -201,7 +239,11 @@ body::before {
     .profile-area { order: 3; margin-left: 10px; } .main-content h1 { font-size: 1.8em; letter-spacing: 1px; margin-bottom: 10px; }
     .call-to-action { font-size: 1em; margin-bottom: 25px; } .action-bubble { font-size: 1.1em; padding: 18px 25px; min-width: 90%; }
     .profile-popup { right: 10px; width: 160px; } .profile-level { font-size: 0.85em; }
+    .profile-bid-popup { font-size: 0.7em; margin-bottom: 10px; } /* RESPONSIVO */
     .xp-bar-container { height: 10px; margin-bottom: 10px; } .xp-text { font-size: 0.65em; }
-    .player-row { flex-direction: column; align-items: flex-start; gap: 8px; }
-    .player-stats-mini { width: 100%; justify-content: space-between; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); }
+
+    /* Modal responsivo para pantallas muy pequeñas */
+    .leaderboard-title { font-size: 1.1em; }
+    .player-name { font-size: 0.9em; }
+    .player-bid { font-size: 0.6em; }
 }
