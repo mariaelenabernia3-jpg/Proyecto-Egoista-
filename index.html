@@ -162,7 +162,20 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
 
-  // Función para renderizar el leaderboard
+  // Variable global para guardar a los jugadores descargados de la nube
+  let allPlayers = {};
+
+  // 1. DESCARGAR Y ESCUCHAR CAMBIOS EN TIEMPO REAL
+  db.ref('players').on('value', (snapshot) => {
+    allPlayers = snapshot.val();
+    if (allPlayers) {
+        renderLeaderboard(allPlayers);
+        // Guardamos una copia en localStorage por seguridad
+        localStorage.setItem('blPlayersData', JSON.stringify(allPlayers));
+    }
+  });
+
+  // 2. FUNCIÓN PARA DIBUJAR LA TABLA
   function renderLeaderboard(players) {
     const leaderboardContent = document.getElementById('leaderboardContent');
     const sortedPlayers = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
@@ -170,7 +183,7 @@
     leaderboardContent.innerHTML = sortedPlayers.map(p => `
         <div class="player-row">
             <div class="player-info">
-                <div class="player-img-wrapper"><img src="${p.img}" alt=""></div>
+                <div class="player-img-wrapper"><img src="${p.img.startsWith('data') ? p.img : p.img}" alt=""></div>
                 <div class="player-text-details">
                     <span class="player-name">${p.name}</span>
                     <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
@@ -184,31 +197,49 @@
     `).join('');
   }
 
-  // ESCUCHAR CAMBIOS EN TIEMPO REAL
-  db.ref('players').on('value', (snapshot) => {
-    const players = snapshot.val();
-    if (players) {
-      renderLeaderboard(players);
-      // Guardamos localmente para el login rápido
-      localStorage.setItem('blPlayersData', JSON.stringify(players));
-    }
-  });
-
-  // Lógica de Login
+  // 3. LÓGICA DE LOGIN MEJORADA
   document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault();
     const user = document.getElementById('username').value;
     const pass = document.getElementById('password').value;
-    const players = JSON.parse(localStorage.getItem('blPlayersData'));
 
+    // Caso 1: Ego (Administrador)
     if (user === 'Ego' && pass === '123') {
         window.location.href = 'ego/ego_dashboard.html';
-    } else if (players && players[user] && players[user].password === pass) {
-        window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
+        return;
+    }
+
+    // Caso 2: Jugadores de la Nube
+    // Buscamos si el usuario existe en el objeto que descargamos de Firebase
+    if (allPlayers && allPlayers[user]) {
+        if (allPlayers[user].password === pass) {
+            window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
+        } else {
+            alert('Contraseña incorrecta para ' + user);
+        }
     } else {
-        alert('Usuario o contraseña incorrectos');
+        alert('El usuario "' + user + '" no existe en el Proyecto Blue Lock o los datos aún se están cargando.');
     }
   });
+
+  // Mostrar/Ocultar contraseña
+  document.getElementById('togglePassword').addEventListener('click', function() {
+      const passwordInput = document.getElementById('password');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+  });
+
+  // Frases de Ego
+  const egoQuotes = [
+      "El talento sin pulir es solo basura.",
+      "Despierta, delantero.",
+      "Rompe tus cadenas.",
+      "Solo un loco puede cambiar el mundo.",
+      "El fútbol es el deporte de los genios egoístas."
+  ];
+  document.getElementById('egoQuote').textContent = `"${egoQuotes[Math.floor(Math.random() * egoQuotes.length)]}"`;
 </script>
 </body>
 </html>
