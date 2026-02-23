@@ -10,19 +10,20 @@
 </head>
 <body>
     <div class="header">
-        <div class="position-display">POSICIÓN: <span>0</span></div>
+        <div class="position-display">POSICIÓN: <span>3</span></div>
         <div class="profile-area">
             <div class="profile-icon" id="profileIcon">
-                <img src="" alt="Foto de perfil" class="profile-pic-preview" style="display: none;">
+                <img src="bachira.png" alt="Foto de perfil" class="profile-pic-preview" style="display: none;">
                 <i class="fas fa-user profile-default-icon"></i> 
             </div>
             <div class="profile-popup" id="profilePopup">
                 <h3>YULIEN</h3>
                 <p>Contraseña: 8</p>
                 <p class="profile-level">Nivel: <span>0</span></p>
+                <!-- XP Actualizado: 35% -->
                 <div class="xp-bar-container">
-                    <div class="xp-bar-fill" style="width: 0%;"></div>
-                    <span class="xp-text">0/100 XP</span>
+                    <div class="xp-bar-fill" style="width: 35%;"></div>
+                    <span class="xp-text">35/100 XP</span>
                 </div>
                 <div class="profile-pic-uploader">
                     <label for="profilePicInput" class="upload-button">
@@ -41,9 +42,103 @@
             <div class="action-bubbles-container">
                 <a href="bachira_missions.html" class="action-bubble">MISIONES</a>
                 <a href="bachira_stats.html" class="action-bubble">ESTADÍSTICAS</a>
+                <div class="action-bubble" id="leaderboardBtn">LEADERBOARD</div>
             </div>
         </div>
     </main>
+
+    <!-- MODAL DE LEADERBOARD (Ordenado: Rin > Nagi > Bachira > Kunigami > Isagi > Gagamaru) -->
+    <div class="coming-soon-modal" id="leaderboardModal">
+        <div class="leaderboard-modal-content">
+            <span class="close-button" id="closeLeaderboard">&times;</span>
+            <h3 class="leaderboard-title">CLASIFICACIÓN GLOBAL</h3>
+
+            <!-- 1. Rin -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="../rin/rin.png" alt="Rin"></div>
+                    <span class="player-name">Ernesto</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">5</span></div>
+                </div>
+            </div>
+
+            <!-- 2. Nagi -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="../nagi/nagi.png" alt="Nagi"></div>
+                    <span class="player-name">Kevin</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">3</span></div>
+                </div>
+            </div>
+
+            <!-- 3. Bachira (TU) -->
+            <div class="player-row" style="border-left-color: #f7e018;">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="../bachira/bachira.png" alt="Bachira"></div>
+                    <span class="player-name" style="color: #f7e018;">Yulien</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">3</span></div>
+                </div>
+            </div>
+
+            <!-- 4. Kunigami -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="../kunigami/kunigami.png" alt="Kunigami"></div>
+                    <span class="player-name">Manuel</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
+                </div>
+            </div>
+
+            <!-- 5. Isagi -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="../isagi/isagi.png" alt="Isagi"></div>
+                    <span class="player-name">Mauricio</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
+                </div>
+            </div>
+
+            <!-- 6. Gagamaru -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="../gagamaru/gagamaru.png" alt="Gagamaru"></div>
+                    <span class="player-name">Deadpool</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 
     <script>
         const profileIcon = document.getElementById('profileIcon');
@@ -52,12 +147,17 @@
         const profilePicPreview = document.querySelector('.profile-pic-preview');
         const profileDefaultIcon = document.querySelector('.profile-default-icon');
 
+        const leaderboardBtn = document.getElementById('leaderboardBtn');
+        const leaderboardModal = document.getElementById('leaderboardModal');
+        const closeLeaderboard = document.getElementById('closeLeaderboard');
+
         profileIcon.addEventListener('click', () => profilePopup.classList.toggle('active'));
         document.addEventListener('click', (event) => {
             if (!profileIcon.contains(event.target) && !profilePopup.contains(event.target)) {
                 profilePopup.classList.remove('active');
             }
         });
+
         profilePicInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -72,6 +172,20 @@
                     profileIcon.style.border = '2px solid var(--electric-blue)';
                 };
                 reader.readAsDataURL(file);
+            }
+        });
+
+        leaderboardBtn.addEventListener('click', () => {
+            leaderboardModal.style.display = 'flex';
+        });
+
+        closeLeaderboard.addEventListener('click', () => {
+            leaderboardModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == leaderboardModal) {
+                leaderboardModal.style.display = 'none';
             }
         });
     </script>

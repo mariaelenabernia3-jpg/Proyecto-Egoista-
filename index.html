@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login & Leaderboard - Blue Lock</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Fuentes de Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -31,103 +33,91 @@
             </form>
         </div>
 
-        <!-- Nueva Sección: Leaderboard Global -->
+        <!-- Sección: Leaderboard Global (Ordenado por Goles) -->
         <div class="global-leaderboard">
             <h3>CLASIFICACIÓN GLOBAL</h3>
             
-            <!-- Jugador: Kevin (Nagi) -->
+            <!-- 1. Ernesto (Rin) - 5 Goles -->
             <div class="player-row">
                 <div class="player-info">
-                    <div class="player-img-wrapper">
-                        <img src="nagi/nagi.png" alt="Nagi">
-                    </div>
-                    <span class="player-name">Kevin</span>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
-                </div>
-            </div>
-
-            <!-- Jugador: Mauricio (Isagi) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper">
-                        <img src="isagi/isagi.png" alt="Isagi">
-                    </div>
-                    <span class="player-name">Mauricio</span>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
-                </div>
-            </div>
-
-            <!-- Jugador: Yulien (Bachira) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper">
-                        <img src="bachira/bachira.png" alt="Bachira">
-                    </div>
-                    <span class="player-name">Yulien</span>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
-                </div>
-            </div>
-
-            <!-- Jugador: Manuel (Kunigami) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper">
-                        <img src="kunigami/kunigami.png" alt="Kunigami">
-                    </div>
-                    <span class="player-name">Manuel</span>
-                </div>
-                <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
-                </div>
-            </div>
-
-            <!-- Jugador: Ernesto (Rin) -->
-            <div class="player-row">
-                <div class="player-info">
-                    <div class="player-img-wrapper">
-                        <img src="rin/rin.png" alt="Rin">
-                    </div>
+                    <div class="player-img-wrapper"><img src="rin/rin.png" alt="Rin"></div>
                     <span class="player-name">Ernesto</span>
                 </div>
                 <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">5</span></div>
                 </div>
             </div>
 
-            <!-- Jugador: Deadpool (Gagamaru) -->
+            <!-- 2. Kevin (Nagi) - 3 Goles (Desempate: 2 Victorias) -->
             <div class="player-row">
                 <div class="player-info">
-                    <div class="player-img-wrapper">
-                        <img src="gagamaru/gagamaru.png" alt="Gagamaru">
-                    </div>
+                    <div class="player-img-wrapper"><img src="nagi/nagi.png" alt="Nagi"></div>
+                    <span class="player-name">Kevin</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">3</span></div>
+                </div>
+            </div>
+
+            <!-- 3. Yulien (Bachira) - 3 Goles (Desempate: 1 Victoria) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="bachira/bachira.png" alt="Bachira"></div>
+                    <span class="player-name">Yulien</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">3</span></div>
+                </div>
+            </div>
+
+            <!-- 4. Manuel (Kunigami) - 1 Gol (Desempate: 2 Victorias) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="kunigami/kunigami.png" alt="Kunigami"></div>
+                    <span class="player-name">Manuel</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">2</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">1</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
+                </div>
+            </div>
+
+            <!-- 5. Mauricio (Isagi) - 1 Gol (Desempate: 1 Victoria) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="isagi/isagi.png" alt="Isagi"></div>
+                    <span class="player-name">Mauricio</span>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
+                </div>
+            </div>
+
+            <!-- 6. Deadpool (Gagamaru) - 1 Gol (Desempate: 1 Victoria) -->
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="gagamaru/gagamaru.png" alt="Gagamaru"></div>
                     <span class="player-name">Deadpool</span>
                 </div>
                 <div class="player-stats-mini">
-                    <div class="stat-box"><span class="label">PJ</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PG</span><span class="val">0</span></div>
-                    <div class="stat-box"><span class="label">PP</span><span class="val">0</span></div>
-                    <div class="stat-box highlight"><span class="label">G</span><span class="val">0</span></div>
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">3</span></div>
+                    <div class="stat-box"><span class="label">PG</span><span class="val">1</span></div>
+                    <div class="stat-box"><span class="label">PP</span><span class="val">2</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">1</span></div>
                 </div>
             </div>
 
@@ -138,6 +128,7 @@
         const passwordInput = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
 
+        // Mostrar/Ocultar contraseña
         togglePassword.addEventListener('click', function() {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
@@ -145,6 +136,7 @@
             this.querySelector('i').classList.toggle('fa-eye-slash');
         });
 
+        // Lógica de Login
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const username = document.getElementById('username').value;
@@ -152,6 +144,7 @@
 
             if (username === 'Ego' && password === '123') {
                 alert('¡ACCESO AUTORIZADO! BIENVENIDO, Ego.');
+                window.location.href = 'ego/ego_dashboard.html';
             } else if (username === 'Nagi' && password === '7') {
                 window.location.href = 'nagi/nagi_dashboard.html';
             } else if (username === 'Isagi' && password === '11') {

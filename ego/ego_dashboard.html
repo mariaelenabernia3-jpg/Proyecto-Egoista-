@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Ego Jinpachi</title>
+    <link rel="stylesheet" href="ego_dashboard_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">BLUE LOCK PROJECT</div>
+        <div class="profile-icon">EGO</div>
+    </div>
+
+    <main class="main-content">
+        <h1>GENERADOR DE EQUIPOS</h1>
+        <p class="subtitle">SISTEMA DE SELECCIÓN BALANCEADO</p>
+
+        <button id="generateBtn" class="generate-button">
+            <i class="fas fa-random"></i> INICIAR RULETA
+        </button>
+
+        <div class="teams-container" id="teamsContainer" style="display: none;">
+            
+            <!-- EQUIPO A -->
+            <div class="team-card team-a">
+                <h2>EQUIPO A</h2>
+                <div class="team-members" id="teamAList">
+                    <!-- Los jugadores aparecerán aquí -->
+                </div>
+            </div>
+
+            <div class="vs-divider">VS</div>
+
+            <!-- EQUIPO B -->
+            <div class="team-card team-b">
+                <h2>EQUIPO B</h2>
+                <div class="team-members" id="teamBList">
+                    <!-- Los jugadores aparecerán aquí -->
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // --- DEFINICIÓN DE JUGADORES POR NIVEL (TIERS) ---
+        
+        // Tier 1: Los más duros
+        const tier1 = [
+            { name: "Ernesto (Rin)", img: "../rin/rin.png" },
+            { name: "Deadpool (Gagamaru)", img: "../gagamaru/gagamaru.png" }
+        ];
+
+        // Tier 2: Nivel medio
+        const tier2 = [
+            { name: "Kevin (Nagi)", img: "../nagi/nagi.png" },
+            { name: "Mauricio (Isagi)", img: "../isagi/isagi.png" }
+        ];
+
+        // Tier 3: Los peores (según tu criterio)
+        const tier3 = [
+            { name: "Manuel (Kunigami)", img: "../kunigami/kunigami.png" },
+            { name: "Yulien (Bachira)", img: "../bachira/bachira.png" }
+        ];
+
+        const generateBtn = document.getElementById('generateBtn');
+        const teamsContainer = document.getElementById('teamsContainer');
+        const teamAList = document.getElementById('teamAList');
+        const teamBList = document.getElementById('teamBList');
+
+        // Función para mezclar un array (Fisher-Yates shuffle)
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Función para crear el HTML de un jugador
+        function createPlayerHTML(player) {
+            return `
+                <div class="player-slot animate-pop">
+                    <div class="player-img">
+                        <img src="${player.img}" alt="${player.name}">
+                    </div>
+                    <span>${player.name}</span>
+                </div>
+            `;
+        }
+
+        generateBtn.addEventListener('click', () => {
+            // Mostrar contenedor
+            teamsContainer.style.display = 'flex';
+            
+            // Limpiar listas anteriores
+            teamAList.innerHTML = '';
+            teamBList.innerHTML = '';
+
+            // 1. Mezclar cada Tier individualmente
+            // Esto asegura que Rin no siempre vaya al equipo A, puede ir al B aleatoriamente.
+            const shuffledTier1 = shuffle([...tier1]);
+            const shuffledTier2 = shuffle([...tier2]);
+            const shuffledTier3 = shuffle([...tier3]);
+
+            // 2. Asignar equipos (Equilibrado: 1 de cada Tier por equipo)
+            const teamA = [shuffledTier1[0], shuffledTier2[0], shuffledTier3[0]];
+            const teamB = [shuffledTier1[1], shuffledTier2[1], shuffledTier3[1]];
+
+            // 3. Renderizar con un pequeño retraso para efecto visual
+            
+            // Insertar Tier 1
+            setTimeout(() => {
+                teamAList.innerHTML += createPlayerHTML(teamA[0]);
+                teamBList.innerHTML += createPlayerHTML(teamB[0]);
+            }, 100);
+
+            // Insertar Tier 2
+            setTimeout(() => {
+                teamAList.innerHTML += createPlayerHTML(teamA[1]);
+                teamBList.innerHTML += createPlayerHTML(teamB[1]);
+            }, 600);
+
+            // Insertar Tier 3
+            setTimeout(() => {
+                teamAList.innerHTML += createPlayerHTML(teamA[2]);
+                teamBList.innerHTML += createPlayerHTML(teamB[2]);
+            }, 1100);
+        });
+    </script>
+</body>
+</html>

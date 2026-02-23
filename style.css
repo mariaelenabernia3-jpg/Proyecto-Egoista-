@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap');
 
 :root {
-    /* Paleta de colores Blue Lock */
     --bg-dark: #1a1a2e;
     --bg-medium: #16213e;
     --accent-blue: #0f3460;
@@ -13,19 +12,18 @@
 
 body {
     font-family: 'Montserrat', sans-serif;
-    background-color: var(--bg-dark); /* Fondo base oscuro */
+    background-color: var(--bg-dark);
     color: var(--text-light);
     min-height: 100vh;
     margin: 0;
     overflow-x: hidden;
-    position: relative; /* Necesario para el efecto de fondo */
+    position: relative;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Alineación superior para permitir scroll */
+    align-items: flex-start;
     padding: 20px;
 }
 
-/* Efecto de fondo sutil (EL QUE TE GUSTABA) */
 body::before {
     content: '';
     position: absolute;
@@ -41,8 +39,8 @@ body::before {
         linear-gradient(315deg, rgba(0,0,0,0.1) 25%, transparent 25%),
         linear-gradient(45deg, rgba(0,0,0,0.1) 25%, transparent 25%);
     background-size: 100px 100px;
-    opacity: 0.2; /* Esto hace que el patrón no moleste */
-    z-index: -1; /* Lo pone detrás de todo */
+    opacity: 0.2;
+    z-index: -1;
 }
 
 .main-wrapper {
@@ -53,10 +51,9 @@ body::before {
     gap: 30px;
     margin-top: 20px;
     margin-bottom: 20px;
-    z-index: 1; /* Asegura que el contenido esté sobre el fondo */
+    z-index: 1;
 }
 
-/* --- ESTILOS DEL LOGIN --- */
 .login-container {
     background-color: var(--bg-medium);
     padding: 30px;
@@ -120,7 +117,7 @@ button {
 }
 button:hover { background-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 188, 212, 0.6); transform: translateY(-2px); }
 
-/* --- ESTILOS DEL LEADERBOARD GLOBAL --- */
+/* --- LEADERBOARD STYLES --- */
 .global-leaderboard {
     background-color: var(--bg-medium);
     border-radius: 10px;
@@ -145,7 +142,7 @@ button:hover { background-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 188, 212,
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(15, 52, 96, 0.5); /* Semi-transparent accent blue */
+    background-color: rgba(15, 52, 96, 0.5);
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -153,17 +150,9 @@ button:hover { background-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 188, 212,
     border-left: 3px solid var(--electric-blue);
 }
 
-.player-row:hover {
-    transform: translateX(5px);
-    background-color: var(--accent-blue);
-}
+.player-row:hover { transform: translateX(5px); background-color: var(--accent-blue); }
 
-.player-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-grow: 1; /* Ocupa el espacio disponible */
-}
+.player-info { display: flex; align-items: center; gap: 12px; flex-grow: 1; }
 
 .player-img-wrapper {
     width: 45px;
@@ -174,70 +163,19 @@ button:hover { background-color: #00e5ff; box-shadow: 0 0 20px rgba(0, 188, 212,
     flex-shrink: 0;
 }
 
-.player-img-wrapper img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+.player-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
 
-.player-name {
-    font-weight: bold;
-    font-size: 1.1em;
-    color: var(--text-light);
-    text-transform: uppercase;
-}
+.player-name { font-weight: bold; font-size: 1.1em; color: var(--text-light); text-transform: uppercase; }
 
-.player-stats-mini {
-    display: flex;
-    gap: 10px;
-}
+.player-stats-mini { display: flex; gap: 10px; }
 
-.stat-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 30px;
-}
+.stat-box { display: flex; flex-direction: column; align-items: center; min-width: 30px; }
+.stat-box .label { font-size: 0.65em; color: var(--text-muted); font-weight: bold; }
+.stat-box .val { font-family: 'Orbitron', sans-serif; font-size: 1.1em; font-weight: bold; color: var(--text-light); }
+.stat-box.highlight .val { color: var(--highlight-gold); text-shadow: 0 0 5px rgba(247, 224, 24, 0.3); }
 
-.stat-box .label {
-    font-size: 0.65em;
-    color: var(--text-muted);
-    font-weight: bold;
-}
-
-.stat-box .val {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.1em;
-    font-weight: bold;
-    color: var(--text-light);
-}
-
-.stat-box.highlight .val {
-    color: var(--highlight-gold);
-    text-shadow: 0 0 5px rgba(247, 224, 24, 0.3);
-}
-
-/* --- RESPONSIVIDAD MÓVIL --- */
 @media (max-width: 480px) {
-    .main-wrapper {
-        width: 100%;
-        padding: 0 5px;
-    }
-    
-    .login-container, .global-leaderboard {
-        padding: 20px 15px;
-    }
-
-    .player-row {
-        flex-direction: column; /* Apilar en pantallas muy pequeñas */
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .player-stats-mini {
-        width: 100%;
-        justify-content: space-between; /* Distribuir stats a lo ancho */
-        padding-top: 5px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-    }
+    .main-wrapper { padding: 0 5px; }
+    .player-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .player-stats-mini { width: 100%; justify-content: space-between; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1); }
 }
