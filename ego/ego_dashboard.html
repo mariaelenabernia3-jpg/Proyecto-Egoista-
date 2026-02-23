@@ -87,122 +87,99 @@
         </div>
     </main>
 
-    <script>
-        // --- BASE DE DATOS LOCAL ---
-        // Si no hay datos, carga los por defecto que hicimos la última vez.
-        const initialPlayersData = {
-            "Rin": { name: "Ernesto", id: "Rin", img: "../rin/rin.png", position: "DC", stats: { ritmo: 82, tiro: 90, pase: 85, regate: 88, defensa: 60, fisico: 78, media: 81 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 5 }, xp: 35, level: 0, bid: 60000000 },
-            "Nagi": { name: "Kevin", id: "Nagi", img: "../nagi/nagi.png", position: "ED", stats: { ritmo: 60, tiro: 80, pase: 70, regate: 68, defensa: 70, fisico: 60, media: 68 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 3 }, xp: 35, level: 0, bid: 40000000 },
-            "Bachira": { name: "Yulien", id: "Bachira", img: "../bachira/bachira.png", position: "ED", stats: { ritmo: 84, tiro: 78, pase: 88, regate: 95, defensa: 40, fisico: 60, media: 74 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 3 }, xp: 35, level: 0, bid: 35000000 },
-            "Kunigami": { name: "Manuel", id: "Kunigami", img: "../kunigami/kunigami.png", position: "DC", stats: { ritmo: 80, tiro: 95, pase: 70, regate: 75, defensa: 65, fisico: 92, media: 78 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 1 }, xp: 15, level: 0, bid: 20000000 },
-            "Isagi": { name: "Mauricio", id: "Isagi", img: "../isagi/isagi.png", position: "DC", stats: { ritmo: 75, tiro: 82, pase: 80, regate: 72, defensa: 50, fisico: 65, media: 71 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 1 }, xp: 15, level: 0, bid: 15000000 },
-            "Gagamaru": { name: "Deadpool", id: "Gagamaru", img: "../gagamaru/gagamaru.png", position: "PO", stats: { ritmo: 85, tiro: 70, pase: 60, regate: 65, defensa: 88, fisico: 92, media: 77 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 1 }, xp: 15, level: 0, bid: 15000000 }
-        };
+   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-        let players = JSON.parse(localStorage.getItem('blPlayersData')) || initialPlayersData;
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
+    authDomain: "bluelock-proyecto.firebaseapp.com",
+    databaseURL: "https://bluelock-proyecto-default-rtdb.firebaseio.com",
+    projectId: "bluelock-proyecto",
+    storageBucket: "bluelock-proyecto.firebasestorage.app",
+    messagingSenderId: "780939191248",
+    appId: "1:780939191248:web:0ba0c191005a7870488fd5",
+    measurementId: "G-XE8F4KS1CJ"
+  };
 
-        // --- 1. LÓGICA DE LA RULETA (FULL AZAR) ---
-        const generateBtn = document.getElementById('generateBtn');
-        const teamsContainer = document.getElementById('teamsContainer');
-        const teamAList = document.getElementById('teamAList');
-        const teamBList = document.getElementById('teamBList');
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+  const playersRef = db.ref('players');
 
-        function createPlayerHTML(player) {
-            return `
-                <div class="player-slot animate-pop">
-                    <div class="player-img"><img src="${player.img}" alt="${player.name}"></div>
-                    <span>${player.name}</span>
-                </div>
-            `;
-        }
+  let players = {};
 
-        generateBtn.addEventListener('click', () => {
-            teamsContainer.style.display = 'none';
-            teamAList.innerHTML = '';
-            teamBList.innerHTML = '';
+  // Cargar datos desde Firebase
+  playersRef.on('value', (snapshot) => {
+    players = snapshot.val();
+  });
 
-            setTimeout(() => {
-                teamsContainer.style.display = 'flex';
-                
-                // Sacar todos los jugadores en una lista simple
-                let allPlayers = Object.values(players);
-                
-                // Mezclar la lista completamente al azar (Fisher-Yates Shuffle)
-                for (let i = allPlayers.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [allPlayers[i], allPlayers[j]] = [allPlayers[j], allPlayers[i]];
-                }
+  // --- LÓGICA DE LA RULETA ---
+  document.getElementById('generateBtn').addEventListener('click', () => {
+      const teamsContainer = document.getElementById('teamsContainer');
+      const teamAList = document.getElementById('teamAList');
+      const teamBList = document.getElementById('teamBList');
+      
+      teamsContainer.style.display = 'none';
+      teamAList.innerHTML = '';
+      teamBList.innerHTML = '';
 
-                // Partir la lista a la mitad
-                const teamA = allPlayers.slice(0, 3);
-                const teamB = allPlayers.slice(3, 6);
+      setTimeout(() => {
+          teamsContainer.style.display = 'flex';
+          let allPlayers = Object.values(players);
+          for (let i = allPlayers.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [allPlayers[i], allPlayers[j]] = [allPlayers[j], allPlayers[i]];
+          }
+          const teamA = allPlayers.slice(0, 3);
+          const teamB = allPlayers.slice(3, 6);
 
-                // Mostrar con efecto
-                setTimeout(() => { teamAList.innerHTML += createPlayerHTML(teamA[0]); teamBList.innerHTML += createPlayerHTML(teamB[0]); }, 100);
-                setTimeout(() => { teamAList.innerHTML += createPlayerHTML(teamA[1]); teamBList.innerHTML += createPlayerHTML(teamB[1]); }, 400);
-                setTimeout(() => { teamAList.innerHTML += createPlayerHTML(teamA[2]); teamBList.innerHTML += createPlayerHTML(teamB[2]); }, 700);
+          teamA.forEach((p, i) => setTimeout(() => {
+              document.getElementById('teamAList').innerHTML += `<div class="player-slot"><span>${p.name}</span></div>`;
+              document.getElementById('teamBList').innerHTML += `<div class="player-slot"><span>${teamB[i].name}</span></div>`;
+          }, i * 400));
+      }, 100);
+  });
 
-            }, 100); 
-        });
+  // --- LÓGICA DEL EDITOR ---
+  const playerSelect = document.getElementById('playerSelect');
+  playerSelect.addEventListener('change', () => {
+      const p = players[playerSelect.value];
+      if(!p) return;
+      document.getElementById('editorForm').style.display = 'block';
+      document.getElementById('edit_pj').value = p.matchStats.pj;
+      document.getElementById('edit_pg').value = p.matchStats.pg;
+      document.getElementById('edit_pp').value = p.matchStats.pp;
+      document.getElementById('edit_g').value = p.matchStats.g;
+      document.getElementById('edit_ritmo').value = p.stats.ritmo;
+      document.getElementById('edit_tiro').value = p.stats.tiro;
+      document.getElementById('edit_pase').value = p.stats.pase;
+      document.getElementById('edit_regate').value = p.stats.regate;
+      document.getElementById('edit_defensa').value = p.stats.defensa;
+      document.getElementById('edit_fisico').value = p.stats.fisico;
+  });
 
-        // --- 2. LÓGICA DEL EDITOR MAESTRO ---
-        const playerSelect = document.getElementById('playerSelect');
-        const editorForm = document.getElementById('editorForm');
-        const savePlayerBtn = document.getElementById('savePlayerBtn');
+  document.getElementById('savePlayerBtn').addEventListener('click', () => {
+      const pId = playerSelect.value;
+      const p = players[pId];
 
-        // Cargar datos al seleccionar a un jugador
-        playerSelect.addEventListener('change', () => {
-            const pId = playerSelect.value;
-            if(pId === "") {
-                editorForm.style.display = 'none';
-                return;
-            }
-            editorForm.style.display = 'block';
-            const p = players[pId];
+      p.matchStats.pj = parseInt(document.getElementById('edit_pj').value);
+      p.matchStats.pg = parseInt(document.getElementById('edit_pg').value);
+      p.matchStats.pp = parseInt(document.getElementById('edit_pp').value);
+      p.matchStats.g = parseInt(document.getElementById('edit_g').value);
+      p.stats.ritmo = parseInt(document.getElementById('edit_ritmo').value);
+      p.stats.tiro = parseInt(document.getElementById('edit_tiro').value);
+      p.stats.pase = parseInt(document.getElementById('edit_pase').value);
+      p.stats.regate = parseInt(document.getElementById('edit_regate').value);
+      p.stats.defensa = parseInt(document.getElementById('edit_defensa').value);
+      p.stats.fisico = parseInt(document.getElementById('edit_fisico').value);
 
-            // Rellenar casillas
-            document.getElementById('edit_pj').value = p.matchStats.pj;
-            document.getElementById('edit_pg').value = p.matchStats.pg;
-            document.getElementById('edit_pp').value = p.matchStats.pp;
-            document.getElementById('edit_g').value = p.matchStats.g;
+      p.bid = (p.matchStats.g * 10000000) + (p.matchStats.pg * 5000000);
+      p.stats.media = Math.round((p.stats.ritmo + p.stats.tiro + p.stats.pase + p.stats.regate + p.stats.defensa + p.stats.fisico) / 6);
 
-            document.getElementById('edit_ritmo').value = p.stats.ritmo;
-            document.getElementById('edit_tiro').value = p.stats.tiro;
-            document.getElementById('edit_pase').value = p.stats.pase;
-            document.getElementById('edit_regate').value = p.stats.regate;
-            document.getElementById('edit_defensa').value = p.stats.defensa;
-            document.getElementById('edit_fisico').value = p.stats.fisico;
-        });
-
-        // Guardar y Auto-calcular
-        savePlayerBtn.addEventListener('click', () => {
-            const pId = playerSelect.value;
-            const p = players[pId];
-
-            // 1. Guardar los datos escritos
-            p.matchStats.pj = parseInt(document.getElementById('edit_pj').value) || 0;
-            p.matchStats.pg = parseInt(document.getElementById('edit_pg').value) || 0;
-            p.matchStats.pp = parseInt(document.getElementById('edit_pp').value) || 0;
-            p.matchStats.g = parseInt(document.getElementById('edit_g').value) || 0;
-
-            p.stats.ritmo = parseInt(document.getElementById('edit_ritmo').value) || 0;
-            p.stats.tiro = parseInt(document.getElementById('edit_tiro').value) || 0;
-            p.stats.pase = parseInt(document.getElementById('edit_pase').value) || 0;
-            p.stats.regate = parseInt(document.getElementById('edit_regate').value) || 0;
-            p.stats.defensa = parseInt(document.getElementById('edit_defensa').value) || 0;
-            p.stats.fisico = parseInt(document.getElementById('edit_fisico').value) || 0;
-
-            // 2. AUTO CÁLCULO DE DINERO (10M por gol, 5M por victoria)
-            p.bid = (p.matchStats.g * 10000000) + (p.matchStats.pg * 5000000);
-
-            // 3. AUTO CÁLCULO DE MEDIA (Promedio de las 6 stats)
-            p.stats.media = Math.round((p.stats.ritmo + p.stats.tiro + p.stats.pase + p.stats.regate + p.stats.defensa + p.stats.fisico) / 6);
-
-            // Guardar en la base de datos del navegador
-            localStorage.setItem('blPlayersData', JSON.stringify(players));
-            
-            alert(`¡Datos de ${p.name} actualizados!\nNuevo Valor de Oferta: $${p.bid.toLocaleString()}\nNueva Media: ${p.stats.media}\nEl Leaderboard se ha reordenado solo.`);
-        });
-    </script>
+      // GUARDAR EN FIREBASE (Se actualiza para todos)
+      playersRef.set(players);
+      alert("¡Datos actualizados en la NUBE!");
+  });
+</script>
 </body>
 </html>

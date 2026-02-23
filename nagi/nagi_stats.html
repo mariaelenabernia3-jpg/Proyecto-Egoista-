@@ -3,109 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Kevin</title>
-    <link rel="stylesheet" href="nagi_dashboard_style.css">
+    <title>Estadísticas de Kevin - Blue Lock</title>
+    <link rel="stylesheet" href="nagi_stats_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="header">
-        <div class="position-display">POSICIÓN: <span id="pos-val">--</span></div>
-        <div class="profile-area">
-            <div class="profile-icon" id="profileIcon">
-                <img src="" id="img-preview" class="profile-pic-preview" style="display: none;">
-                <i class="fas fa-user profile-default-icon" id="default-icon"></i> 
-            </div>
-            <div class="profile-popup" id="profilePopup">
-                <h3>KEVIN</h3>
-                <p>Contraseña: 7</p>
-                <p class="profile-level">Nivel: <span id="lvl-val">0</span></p>
-                <p class="profile-bid-popup" id="bid-val">BID: $0</p>
-                <div class="xp-bar-container">
-                    <div class="xp-bar-fill" id="xp-bar" style="width: 0%;"></div>
-                    <span class="xp-text" id="xp-text">0/100 XP</span>
-                </div>
-                <div class="profile-pic-uploader">
-                    <label for="profilePicInput" class="upload-button"><i class="fas fa-camera"></i> Cambiar Foto</label>
-                    <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
-                </div>
-            </div>
-        </div>
+        <a href="nagi_dashboard.html" class="back-button"><i class="fas fa-arrow-left"></i> VOLVER</a>
     </div>
 
     <main class="main-content">
-        <div class="dashboard-center-content">
-            <h1>BIENVENIDO KEVIN</h1>
-            <div class="action-bubbles-container">
-                <a href="nagi_missions.html" class="action-bubble">MISIONES</a>
-                <a href="nagi_stats.html" class="action-bubble">ESTADÍSTICAS</a>
-                <div class="action-bubble" id="leaderboardBtn">LEADERBOARD</div>
+        <div class="player-card">
+            <div class="player-image-container">
+                <img src="nagi.png" id="stat-img" alt="Kevin" class="player-image">
+            </div>
+            <div class="player-details">
+                <p class="detail-item">Nombre: <span class="detail-value">Kevin</span></p>
+                <p class="detail-item">Posición: <span class="detail-value">ED</span></p>
+                <p class="detail-item">Media General: <span class="detail-value" id="stat-media">--</span></p>
+                
+                <div class="match-history-grid">
+                    <div class="stat-mini-box">PJ: <span id="stat-pj">0</span></div>
+                    <div class="stat-mini-box">PG: <span id="stat-pg">0</span></div>
+                    <div class="stat-mini-box">PP: <span id="stat-pp">0</span></div>
+                    <div class="stat-mini-box">GOLES: <span id="stat-g" style="color: gold; font-weight: bold;">0</span></div>
+                </div>
+
+                <div class="stats-grid" id="skills-grid">
+                    <!-- Las habilidades se cargarán aquí -->
+                </div>
             </div>
         </div>
     </main>
 
-    <div class="coming-soon-modal" id="leaderboardModal">
-        <div class="leaderboard-modal-content">
-            <span class="close-button" id="closeLeaderboard">&times;</span>
-            <h3 class="leaderboard-title">CLASIFICACIÓN GLOBAL</h3>
-            <div id="modalList"></div>
-        </div>
-    </div>
-
     <script>
-        const myId = "Nagi"; 
+        // DATOS MAESTROS DE EMERGENCIA
+        const initialPlayersData = {
+            "Rin": { name: "Ernesto", id: "Rin", password: "10", img: "../rin/rin.png", position: "DC", stats: { ritmo: 82, tiro: 90, pase: 85, regate: 88, defensa: 60, fisico: 78, media: 81 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 5 }, xp: 35, level: 0, bid: 60000000 },
+            "Nagi": { name: "Kevin", id: "Nagi", password: "7", img: "nagi.png", position: "ED", stats: { ritmo: 60, tiro: 80, pase: 70, regate: 68, defensa: 70, fisico: 60, media: 68 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 3 }, xp: 35, level: 0, bid: 40000000 },
+            "Bachira": { name: "Yulien", id: "Bachira", password: "8", img: "../bachira/bachira.png", position: "ED", stats: { ritmo: 84, tiro: 78, pase: 88, regate: 95, defensa: 40, fisico: 60, media: 74 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 3 }, xp: 35, level: 0, bid: 35000000 },
+            "Kunigami": { name: "Manuel", id: "Kunigami", password: "9", img: "../kunigami/kunigami.png", position: "DC", stats: { ritmo: 80, tiro: 95, pase: 70, regate: 75, defensa: 65, fisico: 92, media: 78 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 1 }, xp: 15, level: 0, bid: 20000000 },
+            "Isagi": { name: "Mauricio", id: "Isagi", password: "11", img: "../isagi/isagi.png", position: "DC", stats: { ritmo: 75, tiro: 82, pase: 80, regate: 72, defensa: 50, fisico: 65, media: 71 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 1 }, xp: 15, level: 0, bid: 15000000 },
+            "Gagamaru": { name: "Deadpool", id: "Gagamaru", password: "6", img: "../gagamaru/gagamaru.png", position: "PO", stats: { ritmo: 85, tiro: 70, pase: 60, regate: 65, defensa: 88, fisico: 92, media: 77 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 1 }, xp: 15, level: 0, bid: 15000000 }
+        };
 
-        function updatePage() {
-            const players = JSON.parse(localStorage.getItem('blPlayersData'));
-            if (!players) return;
-            const me = players[myId];
-
-            // Cargar Foto Guardada
-            if (me.img) {
-                document.getElementById('img-preview').src = me.img;
-                document.getElementById('img-preview').style.display = 'block';
-                document.getElementById('default-icon').style.display = 'none';
-                document.getElementById('profileIcon').style.backgroundImage = `url(${me.img})`;
-                document.getElementById('profileIcon').style.backgroundSize = 'cover';
+        function loadStats() {
+            // Si no hay datos, forzar la creación de los iniciales
+            if (!localStorage.getItem('blPlayersData')) {
+                localStorage.setItem('blPlayersData', JSON.stringify(initialPlayersData));
             }
 
-            document.getElementById('bid-val').textContent = "BID: $" + me.bid.toLocaleString();
-            document.getElementById('lvl-val').textContent = me.level;
-            document.getElementById('xp-bar').style.width = me.xp + "%";
-            document.getElementById('xp-text').textContent = me.xp + "/100 XP";
+            const data = JSON.parse(localStorage.getItem('blPlayersData'));
+            const me = data["Nagi"];
 
-            const sorted = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
-            document.getElementById('pos-val').textContent = sorted.findIndex(p => p.id === myId) + 1;
+            // Si el jugador cambió su foto, cargar la personalizada
+            if (me.img && me.img.startsWith('data:image')) {
+                document.getElementById('stat-img').src = me.img;
+            }
 
-            document.getElementById('modalList').innerHTML = sorted.map(p => `
-                <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold;' : ''}">
-                    <div class="player-info">
-                        <div class="player-img-wrapper"><img src="${p.img}" alt=""></div>
-                        <div class="player-text-details"><span class="player-name">${p.name}</span><span class="player-bid">BID: $${p.bid.toLocaleString()}</span></div>
-                    </div>
-                    <div class="player-stats-mini">
-                        <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
-                        <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
-                    </div>
+            // Cargar textos
+            document.getElementById('stat-media').textContent = me.stats.media;
+            document.getElementById('stat-pj').textContent = me.matchStats.pj;
+            document.getElementById('stat-pg').textContent = me.matchStats.pg;
+            document.getElementById('stat-pp').textContent = me.matchStats.pp;
+            document.getElementById('stat-g').textContent = me.matchStats.g;
+
+            // Cargar Habilidades
+            const skills = [
+                {n: 'Ritmo', v: me.stats.ritmo},
+                {n: 'Tiro', v: me.stats.tiro},
+                {n: 'Pase', v: me.stats.pase},
+                {n: 'Regate', v: me.stats.regate},
+                {n: 'Defensa', v: me.stats.defensa},
+                {n: 'Físico', v: me.stats.fisico}
+            ];
+
+            document.getElementById('skills-grid').innerHTML = skills.map(s => `
+                <div class="stat-item">
+                    <span class="stat-name">${s.n}</span>
+                    <span class="stat-value">${s.v}</span>
                 </div>
             `).join('');
         }
 
-        document.getElementById('profilePicInput').addEventListener('change', (e) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const players = JSON.parse(localStorage.getItem('blPlayersData'));
-                players[myId].img = event.target.result;
-                localStorage.setItem('blPlayersData', JSON.stringify(players));
-                updatePage();
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        });
-
-        document.getElementById('profileIcon').onclick = () => document.getElementById('profilePopup').classList.toggle('active');
-        document.getElementById('leaderboardBtn').onclick = () => document.getElementById('leaderboardModal').style.display = 'flex';
-        document.getElementById('closeLeaderboard').onclick = () => document.getElementById('leaderboardModal').style.display = 'none';
-        window.onload = updatePage;
+        document.addEventListener('DOMContentLoaded', loadStats);
     </script>
 </body>
 </html>

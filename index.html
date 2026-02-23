@@ -142,57 +142,73 @@
         </div>
     </div>
 
-    <script>
-        const passwordInput = document.getElementById('password');
-        const togglePassword = document.getElementById('togglePassword');
-        const egoQuoteDiv = document.getElementById('egoQuote');
+    <!-- Cargar Firebase primero -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-        const egoQuotes = [
-            "El talento sin pulir es solo basura.",
-            "Despierta, delantero.",
-            "Rompe tus cadenas.",
-            "Solo un loco puede cambiar el mundo.",
-            "El fútbol es el deporte de los genios egoístas.",
-            "El gol es el producto de un ego inmenso."
-        ];
+<script>
+  // Tu configuración de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
+    authDomain: "bluelock-proyecto.firebaseapp.com",
+    databaseURL: "https://bluelock-proyecto-default-rtdb.firebaseio.com",
+    projectId: "bluelock-proyecto",
+    storageBucket: "bluelock-proyecto.firebasestorage.app",
+    messagingSenderId: "780939191248",
+    appId: "1:780939191248:web:0ba0c191005a7870488fd5",
+    measurementId: "G-XE8F4KS1CJ"
+  };
 
-        function displayRandomEgoQuote() {
-            const randomIndex = Math.floor(Math.random() * egoQuotes.length);
-            egoQuoteDiv.textContent = `"${egoQuotes[randomIndex]}"`;
-        }
-        document.addEventListener('DOMContentLoaded', displayRandomEgoQuote);
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
-        });
+  // Función para renderizar el leaderboard
+  function renderLeaderboard(players) {
+    const leaderboardContent = document.getElementById('leaderboardContent');
+    const sortedPlayers = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
 
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = passwordInput.value;
+    leaderboardContent.innerHTML = sortedPlayers.map(p => `
+        <div class="player-row">
+            <div class="player-info">
+                <div class="player-img-wrapper"><img src="${p.img}" alt=""></div>
+                <div class="player-text-details">
+                    <span class="player-name">${p.name}</span>
+                    <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
+                </div>
+            </div>
+            <div class="player-stats-mini">
+                <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
+            </div>
+        </div>
+    `).join('');
+  }
 
-            if (username === 'Ego' && password === '123') {
-                alert('¡ACCESO AUTORIZADO! BIENVENIDO, Ego.');
-                window.location.href = 'ego/ego_dashboard.html';
-            } else if (username === 'Nagi' && password === '7') {
-                window.location.href = 'nagi/nagi_dashboard.html';
-            } else if (username === 'Isagi' && password === '11') {
-                window.location.href = 'isagi/isagi_dashboard.html';
-            } else if (username === 'Bachira' && password === '8') {
-                window.location.href = 'bachira/bachira_dashboard.html';
-            } else if (username === 'Kunigami' && password === '9') {
-                window.location.href = 'kunigami/kunigami_dashboard.html';
-            } else if (username === 'Rin' && password === '10') {
-                window.location.href = 'rin/rin_dashboard.html';
-            } else if (username === 'Gagamaru' && password === '6') {
-                window.location.href = 'gagamaru/gagamaru_dashboard.html';
-            } else {
-                alert('CREDENCIALES INVÁLIDAS. INTÉNTALO DE NUEVO.');
-            }
-        });
-    </script>
+  // ESCUCHAR CAMBIOS EN TIEMPO REAL
+  db.ref('players').on('value', (snapshot) => {
+    const players = snapshot.val();
+    if (players) {
+      renderLeaderboard(players);
+      // Guardamos localmente para el login rápido
+      localStorage.setItem('blPlayersData', JSON.stringify(players));
+    }
+  });
+
+  // Lógica de Login
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const user = document.getElementById('username').value;
+    const pass = document.getElementById('password').value;
+    const players = JSON.parse(localStorage.getItem('blPlayersData'));
+
+    if (user === 'Ego' && pass === '123') {
+        window.location.href = 'ego/ego_dashboard.html';
+    } else if (players && players[user] && players[user].password === pass) {
+        window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
+    } else {
+        alert('Usuario o contraseña incorrectos');
+    }
+  });
+</script>
 </body>
 </html>
