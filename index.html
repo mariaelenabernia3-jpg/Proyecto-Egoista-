@@ -142,12 +142,10 @@
         </div>
     </div>
 
-    <!-- Cargar Firebase primero -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
 <script>
-  // Tu configuración de Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
     authDomain: "bluelock-proyecto.firebaseapp.com",
@@ -161,85 +159,47 @@
 
   firebase.initializeApp(firebaseConfig);
   const db = firebase.database();
-
-  // Variable global para guardar a los jugadores descargados de la nube
   let allPlayers = {};
 
-  // 1. DESCARGAR Y ESCUCHAR CAMBIOS EN TIEMPO REAL
+  // ESCUCHAR CAMBIOS EN TIEMPO REAL (Esto actualiza la tabla apenas Ego da a guardar)
   db.ref('players').on('value', (snapshot) => {
     allPlayers = snapshot.val();
     if (allPlayers) {
-        renderLeaderboard(allPlayers);
-        // Guardamos una copia en localStorage por seguridad
+        // Guardar en localStorage solo para que el login sepa las claves sin internet
         localStorage.setItem('blPlayersData', JSON.stringify(allPlayers));
-    }
-  });
+        
+        // Dibujar la tabla
+        const container = document.getElementById('leaderboardContent');
+        const sorted = Object.values(allPlayers).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
 
-  // 2. FUNCIÓN PARA DIBUJAR LA TABLA
-  function renderLeaderboard(players) {
-    const leaderboardContent = document.getElementById('leaderboardContent');
-    const sortedPlayers = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
-
-    leaderboardContent.innerHTML = sortedPlayers.map(p => `
-        <div class="player-row">
-            <div class="player-info">
-                <div class="player-img-wrapper"><img src="${p.img.startsWith('data') ? p.img : p.img}" alt=""></div>
-                <div class="player-text-details">
-                    <span class="player-name">${p.name}</span>
-                    <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
+        container.innerHTML = sorted.map(p => `
+            <div class="player-row">
+                <div class="player-info">
+                    <div class="player-img-wrapper"><img src="${p.img}" alt=""></div>
+                    <div class="player-text-details">
+                        <span class="player-name">${p.name}</span>
+                        <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
+                    </div>
+                </div>
+                <div class="player-stats-mini">
+                    <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                    <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
                 </div>
             </div>
-            <div class="player-stats-mini">
-                <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
-                <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
-            </div>
-        </div>
-    `).join('');
-  }
-
-  // 3. LÓGICA DE LOGIN MEJORADA
-  document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const user = document.getElementById('username').value;
-    const pass = document.getElementById('password').value;
-
-    // Caso 1: Ego (Administrador)
-    if (user === 'Ego' && pass === '123') {
-        window.location.href = 'ego/ego_dashboard.html';
-        return;
-    }
-
-    // Caso 2: Jugadores de la Nube
-    // Buscamos si el usuario existe en el objeto que descargamos de Firebase
-    if (allPlayers && allPlayers[user]) {
-        if (allPlayers[user].password === pass) {
-            window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
-        } else {
-            alert('Contraseña incorrecta para ' + user);
-        }
-    } else {
-        alert('El usuario "' + user + '" no existe en el Proyecto Blue Lock o los datos aún se están cargando.');
+        `).join('');
     }
   });
 
-  // Mostrar/Ocultar contraseña
-  document.getElementById('togglePassword').addEventListener('click', function() {
-      const passwordInput = document.getElementById('password');
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-      this.querySelector('i').classList.toggle('fa-eye');
-      this.querySelector('i').classList.toggle('fa-eye-slash');
-  });
-
-  // Frases de Ego
-  const egoQuotes = [
-      "El talento sin pulir es solo basura.",
-      "Despierta, delantero.",
-      "Rompe tus cadenas.",
-      "Solo un loco puede cambiar el mundo.",
-      "El fútbol es el deporte de los genios egoístas."
-  ];
-  document.getElementById('egoQuote').textContent = `"${egoQuotes[Math.floor(Math.random() * egoQuotes.length)]}"`;
+  // Login
+  document.getElementById('loginForm').onsubmit = (e) => {
+      e.preventDefault();
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+      if (user === 'Ego' && pass === '123') { window.location.href = 'ego/ego_dashboard.html'; return; }
+      if (allPlayers[user] && allPlayers[user].password === pass) {
+          window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
+      } else { alert('Usuario o contraseña incorrectos'); }
+  };
 </script>
 </body>
 </html>

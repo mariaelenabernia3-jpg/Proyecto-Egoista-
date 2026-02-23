@@ -37,57 +37,52 @@
         </div>
     </main>
 
-    <script>
-        // DATOS MAESTROS DE EMERGENCIA
-        const initialPlayersData = {
-            "Rin": { name: "Ernesto", id: "Rin", password: "10", img: "../rin/rin.png", position: "DC", stats: { ritmo: 82, tiro: 90, pase: 85, regate: 88, defensa: 60, fisico: 78, media: 81 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 5 }, xp: 35, level: 0, bid: 60000000 },
-            "Nagi": { name: "Kevin", id: "Nagi", password: "7", img: "nagi.png", position: "ED", stats: { ritmo: 60, tiro: 80, pase: 70, regate: 68, defensa: 70, fisico: 60, media: 68 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 3 }, xp: 35, level: 0, bid: 40000000 },
-            "Bachira": { name: "Yulien", id: "Bachira", password: "8", img: "../bachira/bachira.png", position: "ED", stats: { ritmo: 84, tiro: 78, pase: 88, regate: 95, defensa: 40, fisico: 60, media: 74 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 3 }, xp: 35, level: 0, bid: 35000000 },
-            "Kunigami": { name: "Manuel", id: "Kunigami", password: "9", img: "../kunigami/kunigami.png", position: "DC", stats: { ritmo: 80, tiro: 95, pase: 70, regate: 75, defensa: 65, fisico: 92, media: 78 }, matchStats: { pj: 3, pg: 2, pp: 1, g: 1 }, xp: 15, level: 0, bid: 20000000 },
-            "Isagi": { name: "Mauricio", id: "Isagi", password: "11", img: "../isagi/isagi.png", position: "DC", stats: { ritmo: 75, tiro: 82, pase: 80, regate: 72, defensa: 50, fisico: 65, media: 71 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 1 }, xp: 15, level: 0, bid: 15000000 },
-            "Gagamaru": { name: "Deadpool", id: "Gagamaru", password: "6", img: "../gagamaru/gagamaru.png", position: "PO", stats: { ritmo: 85, tiro: 70, pase: 60, regate: 65, defensa: 88, fisico: 92, media: 77 }, matchStats: { pj: 3, pg: 1, pp: 2, g: 1 }, xp: 15, level: 0, bid: 15000000 }
-        };
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-        function loadStats() {
-            // Si no hay datos, forzar la creación de los iniciales
-            if (!localStorage.getItem('blPlayersData')) {
-                localStorage.setItem('blPlayersData', JSON.stringify(initialPlayersData));
-            }
+<script>
+  const myId = "Nagi"; // CAMBIA ESTO PARA CADA JUGADOR
 
-            const data = JSON.parse(localStorage.getItem('blPlayersData'));
-            const me = data["Nagi"];
+  const firebaseConfig = {
+    apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
+    authDomain: "bluelock-proyecto.firebaseapp.com",
+    databaseURL: "https://bluelock-proyecto-default-rtdb.firebaseio.com",
+    projectId: "bluelock-proyecto",
+    storageBucket: "bluelock-proyecto.firebasestorage.app",
+    messagingSenderId: "780939191248",
+    appId: "1:780939191248:web:0ba0c191005a7870488fd5"
+  };
 
-            // Si el jugador cambió su foto, cargar la personalizada
-            if (me.img && me.img.startsWith('data:image')) {
-                document.getElementById('stat-img').src = me.img;
-            }
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
 
-            // Cargar textos
-            document.getElementById('stat-media').textContent = me.stats.media;
-            document.getElementById('stat-pj').textContent = me.matchStats.pj;
-            document.getElementById('stat-pg').textContent = me.matchStats.pg;
-            document.getElementById('stat-pp').textContent = me.matchStats.pp;
-            document.getElementById('stat-g').textContent = me.matchStats.g;
+  // Escuchar a Firebase
+  db.ref('players/' + myId).on('value', (snapshot) => {
+      const me = snapshot.val();
+      if (!me) return;
 
-            // Cargar Habilidades
-            const skills = [
-                {n: 'Ritmo', v: me.stats.ritmo},
-                {n: 'Tiro', v: me.stats.tiro},
-                {n: 'Pase', v: me.stats.pase},
-                {n: 'Regate', v: me.stats.regate},
-                {n: 'Defensa', v: me.stats.defensa},
-                {n: 'Físico', v: me.stats.fisico}
-            ];
+      // Actualizar Goles, Partidos y Media
+      document.getElementById('stat-media').textContent = me.stats.media;
+      document.getElementById('stat-pj').textContent = me.matchStats.pj;
+      document.getElementById('stat-pg').textContent = me.matchStats.pg;
+      document.getElementById('stat-pp').textContent = me.matchStats.pp;
+      document.getElementById('stat-g').textContent = me.matchStats.g;
+      if(me.img) document.getElementById('stat-img').src = me.img;
 
-            document.getElementById('skills-grid').innerHTML = skills.map(s => `
-                <div class="stat-item">
-                    <span class="stat-name">${s.n}</span>
-                    <span class="stat-value">${s.v}</span>
-                </div>
-            `).join('');
-        }
+      // Actualizar Skills
+      const skills = [
+          {n: 'Ritmo', v: me.stats.ritmo}, {n: 'Tiro', v: me.stats.tiro},
+          {n: 'Pase', v: me.stats.pase}, {n: 'Regate', v: me.stats.regate},
+          {n: 'Defensa', v: me.stats.defensa}, {n: 'Físico', v: me.stats.fisico}
+      ];
 
-        document.addEventListener('DOMContentLoaded', loadStats);
-    </script>
+      document.getElementById('skills-grid').innerHTML = skills.map(s => `
+          <div class="stat-item">
+              <span class="stat-name">${s.n}</span>
+              <span class="stat-value">${s.v}</span>
+          </div>
+      `).join('');
+  });
+</script>
 </body>
 </html>

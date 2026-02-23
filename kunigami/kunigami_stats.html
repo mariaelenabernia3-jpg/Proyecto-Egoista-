@@ -37,35 +37,52 @@
         </div>
     </main>
 
-    <script>
-        function loadStats() {
-            const data = JSON.parse(localStorage.getItem('blPlayersData'));
-            if (!data) return;
-            const me = data["Kunigami"];
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-            document.getElementById('stat-media').textContent = me.stats.media;
-            document.getElementById('stat-pj').textContent = me.matchStats.pj;
-            document.getElementById('stat-pg').textContent = me.matchStats.pg;
-            document.getElementById('stat-pp').textContent = me.matchStats.pp;
-            document.getElementById('stat-g').textContent = me.matchStats.g;
+<script>
+  const myId = "Kunigami"; // CAMBIA ESTO PARA CADA JUGADOR
 
-            const skills = [
-                {n: 'Ritmo', v: me.stats.ritmo},
-                {n: 'Tiro', v: me.stats.tiro},
-                {n: 'Pase', v: me.stats.pase},
-                {n: 'Regate', v: me.stats.regate},
-                {n: 'Defensa', v: me.stats.defensa},
-                {n: 'Físico', v: me.stats.fisico}
-            ];
+  const firebaseConfig = {
+    apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
+    authDomain: "bluelock-proyecto.firebaseapp.com",
+    databaseURL: "https://bluelock-proyecto-default-rtdb.firebaseio.com",
+    projectId: "bluelock-proyecto",
+    storageBucket: "bluelock-proyecto.firebasestorage.app",
+    messagingSenderId: "780939191248",
+    appId: "1:780939191248:web:0ba0c191005a7870488fd5"
+  };
 
-            document.getElementById('skills-grid').innerHTML = skills.map(s => `
-                <div class="stat-item">
-                    <span class="stat-name">${s.n}</span>
-                    <span class="stat-value">${s.v}</span>
-                </div>
-            `).join('');
-        }
-        document.addEventListener('DOMContentLoaded', loadStats);
-    </script>
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Escuchar a Firebase
+  db.ref('players/' + myId).on('value', (snapshot) => {
+      const me = snapshot.val();
+      if (!me) return;
+
+      // Actualizar Goles, Partidos y Media
+      document.getElementById('stat-media').textContent = me.stats.media;
+      document.getElementById('stat-pj').textContent = me.matchStats.pj;
+      document.getElementById('stat-pg').textContent = me.matchStats.pg;
+      document.getElementById('stat-pp').textContent = me.matchStats.pp;
+      document.getElementById('stat-g').textContent = me.matchStats.g;
+      if(me.img) document.getElementById('stat-img').src = me.img;
+
+      // Actualizar Skills
+      const skills = [
+          {n: 'Ritmo', v: me.stats.ritmo}, {n: 'Tiro', v: me.stats.tiro},
+          {n: 'Pase', v: me.stats.pase}, {n: 'Regate', v: me.stats.regate},
+          {n: 'Defensa', v: me.stats.defensa}, {n: 'Físico', v: me.stats.fisico}
+      ];
+
+      document.getElementById('skills-grid').innerHTML = skills.map(s => `
+          <div class="stat-item">
+              <span class="stat-name">${s.n}</span>
+              <span class="stat-value">${s.v}</span>
+          </div>
+      `).join('');
+  });
+</script>
 </body>
 </html>
