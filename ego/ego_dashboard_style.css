@@ -1,106 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap');
 
-:root {
-    --bg-dark: #0f0f1a;
-    --bg-panel: #1a1a2e;
-    --ego-red: #e94560;
-    --accent-blue: #00bcd4;
-    --text-white: #ffffff;
-    --input-bg: #28283d;
-    --border-color: #3e3e5a;
-    --highlight-gold: #f7e018;
+:root { --ego-red: #e94560; --accent-blue: #00bcd4; --bg-dark: #0f0f1a; --bg-panel: #1a1a2e; }
+
+body { font-family: 'Montserrat'; background: var(--bg-dark); color: white; margin: 0; padding: 20px; }
+
+.header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--ego-red); padding-bottom: 10px; margin-bottom: 30px; }
+.header-title { font-family: 'Orbitron'; color: var(--ego-red); font-size: 1.5em; }
+
+.admin-section { background: var(--bg-panel); border: 1px solid var(--ego-red); padding: 20px; border-radius: 10px; margin-bottom: 30px; }
+
+/* --- BOTONES --- */
+.generate-button, .save-button {
+    background: var(--ego-red); color: white; border: none; padding: 15px;
+    border-radius: 5px; font-family: 'Orbitron'; cursor: pointer; width: 100%; margin-top: 10px;
 }
+.generate-button:hover { background: #ff2e4d; }
+.save-button { background: var(--accent-blue); color: black; }
 
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-white);
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
+/* --- FORMULARIO --- */
+.input-field { background: #28283d; color: white; border: 1px solid #3e3e5a; padding: 10px; border-radius: 5px; width: 100%; margin: 10px 0; }
+.editor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+.editor-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; }
 
-.header {
-    background-color: #000;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--ego-red);
-}
+.input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.min-input { width: 60px; text-align: center; }
 
-.header-title { font-family: 'Orbitron', sans-serif; font-size: 1.5em; color: var(--ego-red); letter-spacing: 2px; }
-.logout-btn { color: #fff; text-decoration: none; border: 1px solid var(--ego-red); padding: 5px 15px; border-radius: 5px; font-family: 'Orbitron', sans-serif; font-size: 0.8em;}
-.logout-btn:hover { background-color: var(--ego-red); }
-
-.main-content {
-    flex-grow: 1;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-h1 { font-family: 'Orbitron', sans-serif; font-size: 2em; margin-bottom: 10px; text-shadow: 0 0 10px rgba(233, 69, 96, 0.5); text-align: center; }
-.ego-quote-dashboard { font-style: italic; color: #888; margin-bottom: 30px; text-align: center; }
-
-.admin-section {
-    background-color: var(--bg-panel);
-    border: 1px solid var(--ego-red);
-    border-radius: 10px;
-    padding: 30px;
-    width: 100%;
-    max-width: 900px;
-    box-shadow: 0 0 20px rgba(233, 69, 96, 0.2);
-    margin-bottom: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.admin-section h2 { font-family: 'Orbitron', sans-serif; color: var(--text-white); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 20px; width: 100%; text-align: center;}
-
-/* --- RULETA --- */
-.generate-button {
-    background-color: var(--ego-red); color: white; font-family: 'Orbitron', sans-serif; font-size: 1.2em; padding: 15px 40px; border: none; border-radius: 5px; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 0 20px rgba(233, 69, 96, 0.4); margin-bottom: 30px;
-}
-.generate-button:hover { background-color: #ff2e4d; transform: scale(1.05); }
-
-.teams-container { display: flex; justify-content: center; align-items: flex-start; gap: 40px; width: 100%; flex-wrap: wrap; }
-.team-card { background-color: rgba(0,0,0,0.3); border: 1px solid var(--accent-blue); border-radius: 10px; padding: 20px; width: 300px; min-height: 300px; display: flex; flex-direction: column; }
-.team-a { border-color: var(--accent-blue); }
-.team-b { border-color: var(--ego-red); }
-.team-card h2 { border: none; margin-bottom: 10px;}
-.vs-divider { font-family: 'Orbitron', sans-serif; font-size: 3em; font-weight: bold; align-self: center; }
-
-.player-slot { display: flex; align-items: center; gap: 15px; background-color: rgba(255,255,255,0.05); padding: 10px; border-radius: 8px; margin-bottom: 10px; }
-.player-img { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid #fff; }
-.player-img img { width: 100%; height: 100%; object-fit: cover; }
-.animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-@keyframes popIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
-
-/* --- EDITOR DE JUGADORES --- */
-.editor-container { width: 100%; display: flex; flex-direction: column; align-items: center; }
-.input-field { background-color: var(--input-bg); color: var(--text-white); border: 1px solid var(--border-color); padding: 10px; border-radius: 5px; font-family: 'Montserrat', sans-serif; font-size: 1em; outline: none; }
-.input-field:focus { border-color: var(--accent-blue); }
-select.input-field { width: 300px; text-align: center; font-weight: bold;}
-
-.editor-grid { display: flex; gap: 20px; width: 100%; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;}
-.editor-box { background-color: rgba(0,0,0,0.3); border-radius: 8px; padding: 20px; flex: 1; min-width: 250px; border: 1px solid var(--border-color); }
-.editor-box h3 { text-align: center; font-family: 'Orbitron', sans-serif; margin-top: 0; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 10px;}
-
-.input-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px;}
-.input-row label { font-size: 0.9em; color: #ccc;}
-.min-input { width: 60px; text-align: center; font-family: 'Orbitron', sans-serif; color: var(--accent-blue); font-weight: bold;}
-
-.save-button { background-color: var(--accent-blue); color: var(--bg-dark); font-family: 'Orbitron', sans-serif; font-size: 1.1em; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 10px;}
-.save-button:hover { background-color: #00e5ff; }
-
-@media (max-width: 768px) {
-    .teams-container { flex-direction: column; align-items: center; }
-    .vs-divider { margin: 10px 0; font-size: 2em; }
-    .team-card { width: 90%; min-height: auto; }
-    .editor-grid { flex-direction: column; }
-    select.input-field { width: 100%; }
-}
+/* --- RESULTADO RULETA --- */
+.teams-container { display: flex; gap: 20px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+.team-card { background: #000; border: 1px solid var(--accent-blue); padding: 15px; border-radius: 10px; width: 200px; }
+.player-slot { background: #222; padding: 8px; margin: 5px 0; border-radius: 5px; font-size: 0.9em; }

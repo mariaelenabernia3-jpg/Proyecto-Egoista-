@@ -18,36 +18,32 @@
         <h1>CONTROL ABSOLUTO</h1>
         <div id="egoQuoteDashboard" class="ego-quote-dashboard">"El talento sin pulir es solo basura."</div>
 
-        <!-- SECCIÓN 1: RULETA FULL ALEATORIA -->
+        <!-- SECCIÓN 1: RULETA 100% ALEATORIA -->
         <div class="admin-section">
-            <h2>RULETA DE EQUIPOS (100% AZAR)</h2>
+            <h2>RULETA DE EQUIPOS (AZAR TOTAL)</h2>
             <button id="generateBtn" class="generate-button">
-                <i class="fas fa-random"></i> CREAR EQUIPOS
+                <i class="fas fa-random"></i> GENERAR PARTIDO
             </button>
 
             <div class="teams-container" id="teamsContainer" style="display: none;">
                 <div class="team-card team-a">
-                    <h2 style="color: var(--accent-blue);">EQUIPO A</h2>
+                    <h2>EQUIPO A</h2>
                     <div class="team-members" id="teamAList"></div>
                 </div>
                 <div class="vs-divider">VS</div>
                 <div class="team-card team-b">
-                    <h2 style="color: var(--ego-red);">EQUIPO B</h2>
+                    <h2>EQUIPO B</h2>
                     <div class="team-members" id="teamBList"></div>
                 </div>
             </div>
         </div>
 
-        <!-- SECCIÓN 2: EDITOR MAESTRO DE JUGADORES -->
+        <!-- SECCIÓN 2: EDITOR DE JUGADORES (MODO DIOS) -->
         <div class="admin-section">
-            <h2>EDITOR DE JUGADORES</h2>
-            <p style="color: #aaa; font-size: 0.9em; margin-bottom: 20px;">
-                Elige un jugador. El Dinero (BID), la Media General y el Ranking se calcularán <b>solos</b> al guardar.
-            </p>
-
+            <h2>EDITOR DE ESTADÍSTICAS</h2>
             <div class="editor-container">
-                <label for="playerSelect" style="color: var(--electric-blue); font-weight: bold;">SELECCIONAR JUGADOR:</label>
-                <select id="playerSelect" class="input-field" style="margin-bottom: 20px;">
+                <label for="playerSelect">SELECCIONAR JUGADOR PARA EDITAR:</label>
+                <select id="playerSelect" class="input-field">
                     <option value="">-- Elige un Jugador --</option>
                     <option value="Rin">Ernesto (Rin)</option>
                     <option value="Nagi">Kevin (Nagi)</option>
@@ -57,21 +53,20 @@
                     <option value="Gagamaru">Deadpool (Gagamaru)</option>
                 </select>
 
-                <div id="editorForm" style="display: none;">
-                    
+                <div id="editorForm" style="display: none; width: 100%;">
                     <div class="editor-grid">
                         <!-- RENDIMIENTO -->
                         <div class="editor-box">
-                            <h3 style="color: var(--highlight-gold);">RENDIMIENTO</h3>
-                            <div class="input-row"><label>Partidos Jugados (PJ)</label><input type="number" id="edit_pj" class="input-field min-input"></div>
-                            <div class="input-row"><label>Ganados (PG)</label><input type="number" id="edit_pg" class="input-field min-input"></div>
-                            <div class="input-row"><label>Perdidos (PP)</label><input type="number" id="edit_pp" class="input-field min-input"></div>
-                            <div class="input-row"><label>Goles (G)</label><input type="number" id="edit_g" class="input-field min-input"></div>
+                            <h3 style="color: var(--highlight-gold);">PARTIDOS Y GOLES</h3>
+                            <div class="input-row"><label>PJ (Jugados)</label><input type="number" id="edit_pj" class="input-field min-input"></div>
+                            <div class="input-row"><label>PG (Ganados)</label><input type="number" id="edit_pg" class="input-field min-input"></div>
+                            <div class="input-row"><label>PP (Perdidos)</label><input type="number" id="edit_pp" class="input-field min-input"></div>
+                            <div class="input-row"><label>G (Goles Totales)</label><input type="number" id="edit_g" class="input-field min-input"></div>
                         </div>
 
-                        <!-- ESTADÍSTICAS (SKILLS) -->
+                        <!-- HABILIDADES -->
                         <div class="editor-box">
-                            <h3 style="color: var(--electric-blue);">HABILIDADES</h3>
+                            <h3 style="color: var(--electric-blue);">HABILIDADES (0-99)</h3>
                             <div class="input-row"><label>Ritmo</label><input type="number" id="edit_ritmo" class="input-field min-input"></div>
                             <div class="input-row"><label>Tiro</label><input type="number" id="edit_tiro" class="input-field min-input"></div>
                             <div class="input-row"><label>Pase</label><input type="number" id="edit_pase" class="input-field min-input"></div>
@@ -80,106 +75,130 @@
                             <div class="input-row"><label>Físico</label><input type="number" id="edit_fisico" class="input-field min-input"></div>
                         </div>
                     </div>
-
-                    <button id="savePlayerBtn" class="save-button">GUARDAR Y RECALCULAR</button>
+                    <button id="savePlayerBtn" class="save-button">GUARDAR Y SINCRONIZAR NUBE</button>
                 </div>
             </div>
         </div>
     </main>
 
-   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- SCRIPTS DE FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
-    authDomain: "bluelock-proyecto.firebaseapp.com",
-    databaseURL: "https://bluelock-proyecto-default-rtdb.firebaseio.com",
-    projectId: "bluelock-proyecto",
-    storageBucket: "bluelock-proyecto.firebasestorage.app",
-    messagingSenderId: "780939191248",
-    appId: "1:780939191248:web:0ba0c191005a7870488fd5",
-    measurementId: "G-XE8F4KS1CJ"
-  };
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
+            authDomain: "bluelock-proyecto.firebaseapp.com",
+            databaseURL: "https://bluelock-proyecto-default-rtdb.firebaseio.com",
+            projectId: "bluelock-proyecto",
+            storageBucket: "bluelock-proyecto.firebasestorage.app",
+            messagingSenderId: "780939191248",
+            appId: "1:780939191248:web:0ba0c191005a7870488fd5",
+            measurementId: "G-XE8F4KS1CJ"
+        };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-  const playersRef = db.ref('players');
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const playersRef = db.ref('players');
+        let players = {};
 
-  let players = {};
+        // 1. CARGAR DATOS EN TIEMPO REAL
+        playersRef.on('value', (snapshot) => {
+            players = snapshot.val();
+        });
 
-  // Cargar datos desde Firebase
-  playersRef.on('value', (snapshot) => {
-    players = snapshot.val();
-  });
+        // 2. RULETA 100% ALEATORIA (SIN TIERS)
+        document.getElementById('generateBtn').onclick = () => {
+            const container = document.getElementById('teamsContainer');
+            const listA = document.getElementById('teamAList');
+            const listB = document.getElementById('teamBList');
+            
+            container.style.display = 'none';
+            listA.innerHTML = '';
+            listB.innerHTML = '';
 
-  // --- LÓGICA DE LA RULETA ---
-  document.getElementById('generateBtn').addEventListener('click', () => {
-      const teamsContainer = document.getElementById('teamsContainer');
-      const teamAList = document.getElementById('teamAList');
-      const teamBList = document.getElementById('teamBList');
-      
-      teamsContainer.style.display = 'none';
-      teamAList.innerHTML = '';
-      teamBList.innerHTML = '';
+            setTimeout(() => {
+                container.style.display = 'flex';
+                let pool = Object.values(players);
+                
+                // Mezcla total
+                for (let i = pool.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [pool[i], pool[j]] = [pool[j], pool[i]];
+                }
 
-      setTimeout(() => {
-          teamsContainer.style.display = 'flex';
-          let allPlayers = Object.values(players);
-          for (let i = allPlayers.length - 1; i > 0; i--) {
-              const j = Math.floor(Math.random() * (i + 1));
-              [allPlayers[i], allPlayers[j]] = [allPlayers[j], allPlayers[i]];
-          }
-          const teamA = allPlayers.slice(0, 3);
-          const teamB = allPlayers.slice(3, 6);
+                const teamA = pool.slice(0, 3);
+                const teamB = pool.slice(3, 6);
 
-          teamA.forEach((p, i) => setTimeout(() => {
-              document.getElementById('teamAList').innerHTML += `<div class="player-slot"><span>${p.name}</span></div>`;
-              document.getElementById('teamBList').innerHTML += `<div class="player-slot"><span>${teamB[i].name}</span></div>`;
-          }, i * 400));
-      }, 100);
-  });
+                teamA.forEach((p, i) => {
+                    setTimeout(() => {
+                        listA.innerHTML += `<div class="player-slot animate-pop"><span>${p.name}</span></div>`;
+                        listB.innerHTML += `<div class="player-slot animate-pop"><span>${teamB[i].name}</span></div>`;
+                    }, i * 400);
+                });
+            }, 100);
+        };
 
-  // --- LÓGICA DEL EDITOR ---
-  const playerSelect = document.getElementById('playerSelect');
-  playerSelect.addEventListener('change', () => {
-      const p = players[playerSelect.value];
-      if(!p) return;
-      document.getElementById('editorForm').style.display = 'block';
-      document.getElementById('edit_pj').value = p.matchStats.pj;
-      document.getElementById('edit_pg').value = p.matchStats.pg;
-      document.getElementById('edit_pp').value = p.matchStats.pp;
-      document.getElementById('edit_g').value = p.matchStats.g;
-      document.getElementById('edit_ritmo').value = p.stats.ritmo;
-      document.getElementById('edit_tiro').value = p.stats.tiro;
-      document.getElementById('edit_pase').value = p.stats.pase;
-      document.getElementById('edit_regate').value = p.stats.regate;
-      document.getElementById('edit_defensa').value = p.stats.defensa;
-      document.getElementById('edit_fisico').value = p.stats.fisico;
-  });
+        // 3. EDITOR DE JUGADORES
+        const pSelect = document.getElementById('playerSelect');
+        const eForm = document.getElementById('editorForm');
 
-  document.getElementById('savePlayerBtn').addEventListener('click', () => {
-      const pId = playerSelect.value;
-      const p = players[pId];
+        pSelect.onchange = () => {
+            const p = players[pSelect.value];
+            if (!p) { eForm.style.display = 'none'; return; }
+            eForm.style.display = 'block';
 
-      p.matchStats.pj = parseInt(document.getElementById('edit_pj').value);
-      p.matchStats.pg = parseInt(document.getElementById('edit_pg').value);
-      p.matchStats.pp = parseInt(document.getElementById('edit_pp').value);
-      p.matchStats.g = parseInt(document.getElementById('edit_g').value);
-      p.stats.ritmo = parseInt(document.getElementById('edit_ritmo').value);
-      p.stats.tiro = parseInt(document.getElementById('edit_tiro').value);
-      p.stats.pase = parseInt(document.getElementById('edit_pase').value);
-      p.stats.regate = parseInt(document.getElementById('edit_regate').value);
-      p.stats.defensa = parseInt(document.getElementById('edit_defensa').value);
-      p.stats.fisico = parseInt(document.getElementById('edit_fisico').value);
+            document.getElementById('edit_pj').value = p.matchStats.pj;
+            document.getElementById('edit_pg').value = p.matchStats.pg;
+            document.getElementById('edit_pp').value = p.matchStats.pp;
+            document.getElementById('edit_g').value = p.matchStats.g;
+            document.getElementById('edit_ritmo').value = p.stats.ritmo;
+            document.getElementById('edit_tiro').value = p.stats.tiro;
+            document.getElementById('edit_pase').value = p.stats.pase;
+            document.getElementById('edit_regate').value = p.stats.regate;
+            document.getElementById('edit_defensa').value = p.stats.defensa;
+            document.getElementById('edit_fisico').value = p.stats.fisico;
+        };
 
-      p.bid = (p.matchStats.g * 10000000) + (p.matchStats.pg * 5000000);
-      p.stats.media = Math.round((p.stats.ritmo + p.stats.tiro + p.stats.pase + p.stats.regate + p.stats.defensa + p.stats.fisico) / 6);
+        document.getElementById('savePlayerBtn').onclick = () => {
+            const id = pSelect.value;
+            const p = players[id];
 
-      // GUARDAR EN FIREBASE (Se actualiza para todos)
-      playersRef.set(players);
-      alert("¡Datos actualizados en la NUBE!");
-  });
-</script>
+            // Guardar valores del formulario
+            p.matchStats.pj = parseInt(document.getElementById('edit_pj').value);
+            p.matchStats.pg = parseInt(document.getElementById('edit_pg').value);
+            p.matchStats.pp = parseInt(document.getElementById('edit_pp').value);
+            p.matchStats.g = parseInt(document.getElementById('edit_g').value);
+            p.stats.ritmo = parseInt(document.getElementById('edit_ritmo').value);
+            p.stats.tiro = parseInt(document.getElementById('edit_tiro').value);
+            p.stats.pase = parseInt(document.getElementById('edit_pase').value);
+            p.stats.regate = parseInt(document.getElementById('edit_regate').value);
+            p.stats.defensa = parseInt(document.getElementById('edit_defensa').value);
+            p.stats.fisico = parseInt(document.getElementById('edit_fisico').value);
+
+            // --- AUTO CÁLCULOS ---
+            // Dinero: $10M por gol + $5M por victoria
+            p.bid = (p.matchStats.g * 10000000) + (p.matchStats.pg * 5000000);
+            
+            // Media: Promedio de habilidades
+            p.stats.media = Math.round((p.stats.ritmo + p.stats.tiro + p.stats.pase + p.stats.regate + p.stats.defensa + p.stats.fisico) / 6);
+
+            // XP: Basado en los goles y victorias totales (ejemplo: cada gol 5xp, cada victoria 10xp)
+            p.xp = (p.matchStats.g * 5) + (p.matchStats.pg * 10);
+            if (p.xp >= 100) {
+                p.level = Math.floor(p.xp / 100);
+                p.xp = p.xp % 100;
+            }
+
+            // SUBIR A FIREBASE
+            playersRef.set(players).then(() => {
+                alert(`¡${p.name} actualizado!\nBID: $${p.bid.toLocaleString()}\nMedia: ${p.stats.media}`);
+            });
+        };
+
+        // Frases aleatorias
+        const quotes = ["El talento sin pulir es solo basura.", "Despierta, delantero.", "Rompe tus cadenas.", "El gol es el producto de un ego inmenso."];
+        document.getElementById('egoQuoteDashboard').innerText = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`;
+    </script>
 </body>
 </html>

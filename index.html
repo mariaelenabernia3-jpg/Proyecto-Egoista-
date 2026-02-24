@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Proyecto Blue Lock</title>
+    <title>Login & Leaderboard - Blue Lock</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Fuentes de Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome para iconos (Ojo, Corona, etc.) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="main-wrapper">
+        <!-- Sección de Login -->
         <div class="login-container">
             <h2>ACCESO EXCLUSIVO</h2>
             <div id="egoQuote" class="ego-quote">"El talento sin pulir es solo basura."</div>
@@ -17,12 +20,12 @@
             <form id="loginForm">
                 <div class="input-group">
                     <label for="username">USUARIO</label>
-                    <input type="text" id="username" name="username" required autocomplete="off">
+                    <input type="text" id="username" placeholder="Nombre del jugador" required>
                 </div>
                 <div class="input-group">
                     <label for="password">CONTRASEÑA</label>
                     <div class="password-input-wrapper">
-                        <input type="password" id="password" name="password" required>
+                        <input type="password" id="password" placeholder="••••" required>
                         <span class="toggle-password" id="togglePassword">
                             <i class="fas fa-eye"></i>
                         </span>
@@ -31,13 +34,23 @@
                 <button type="submit">INICIAR SESIÓN</button>
             </form>
         </div>
+
+        <!-- Sección: Leaderboard Global -->
+        <div class="global-leaderboard">
+            <h3>CLASIFICACIÓN GLOBAL</h3>
+            <div id="leaderboardContent">
+                <!-- Se carga dinámicamente desde Firebase -->
+                <p style="text-align: center; color: var(--text-muted);">Cargando datos del proyecto...</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- SCRIPTS DE FIREBASE (Versión CDN compatible con HTML directo) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
+        // CONFIGURACIÓN DE TU FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
             authDomain: "bluelock-proyecto.firebaseapp.com",
@@ -45,48 +58,104 @@
             projectId: "bluelock-proyecto",
             storageBucket: "bluelock-proyecto.firebasestorage.app",
             messagingSenderId: "780939191248",
-            appId: "1:780939191248:web:0ba0c191005a7870488fd5"
+            appId: "1:780939191248:web:0ba0c191005a7870488fd5",
+            measurementId: "G-XE8F4KS1CJ"
         };
 
+        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let allPlayers = {};
+        let allPlayers = {}; // Aquí guardaremos los datos descargados
 
-        // Bajamos la lista de jugadores para validar el login
+        // --- 1. ESCUCHAR CAMBIOS EN LA NUBE (TIEMPO REAL) ---
         db.ref('players').on('value', (snapshot) => {
             allPlayers = snapshot.val();
+            if (allPlayers) {
+                renderLeaderboard(allPlayers);
+                // Guardar copia local para el login
+                localStorage.setItem('blPlayersData', JSON.stringify(allPlayers));
+            }
         });
 
-        // Lógica de Login
+        // --- 2. FUNCIÓN PARA DIBUJAR LA TABLA ---
+        function renderLeaderboard(players) {
+            const container = document.getElementById('leaderboardContent');
+            // Ordenar por Goles (G), luego por Ganados (PG) como desempate
+            const sorted = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
+
+            container.innerHTML = sorted.map((p, index) => {
+                const position = index + 1;
+                // Si es el 1º pone corona, si no, el número
+                const rankDisplay = (position === 1) 
+                    ? `<i class="fas fa-crown crown-icon"></i>` 
+                    : position;
+
+                return `
+                    <div class="player-row">
+                        <div class="player-info">
+                            <div class="rank-badge">${rankDisplay}</div>
+                            <div class="player-img-wrapper">
+                                <img src="${p.img.startsWith('data') ? p.img : p.img}" alt="img">
+                            </div>
+                            <div class="player-text-details">
+                                <span class="player-name">${p.name}</span>
+                                <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
+                            </div>
+                        </div>
+                        <div class="player-stats-mini">
+                            <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                            <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- 3. LÓGICA DE LOGIN ---
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
 
+            // Caso Admin: Ego
             if (user === 'Ego' && pass === '123') {
                 window.location.href = 'ego/ego_dashboard.html';
                 return;
             }
 
-            if (allPlayers && allPlayers[user]) {
+            // Caso Jugadores: Buscar en los datos bajados de Firebase
+            if (allPlayers[user]) {
                 if (allPlayers[user].password === pass) {
                     window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
                 } else {
-                    alert('Contraseña incorrecta');
+                    alert('Contraseña incorrecta para ' + user);
                 }
             } else {
-                alert('Usuario no encontrado. Asegúrate de usar Mayúsculas si es necesario.');
+                alert('El usuario no existe o los datos aún se están cargando.');
             }
         };
 
-        // Mostrar/Ocultar password
+        // --- 4. INTERFAZ (OJO Y FRASES) ---
         document.getElementById('togglePassword').onclick = function() {
-            const passInput = document.getElementById('password');
-            const type = passInput.type === 'password' ? 'text' : 'password';
-            passInput.type = type;
-            this.querySelector('i').classList.toggle('fa-eye');
-            this.querySelector('i').classList.toggle('fa-eye-slash');
+            const input = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = "password";
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
         };
+
+        const egoQuotes = [
+            "El talento sin pulir es solo basura.",
+            "Despierta, delantero.",
+            "Rompe tus cadenas.",
+            "Solo un loco puede cambiar el mundo.",
+            "El fútbol es el deporte de los genios egoístas."
+        ];
+        document.getElementById('egoQuote').textContent = `"${egoQuotes[Math.floor(Math.random() * egoQuotes.length)]}"`;
     </script>
 </body>
 </html>

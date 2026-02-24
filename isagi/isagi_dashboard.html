@@ -21,6 +21,7 @@
                 <h3>MAURICIO</h3>
                 <p>Contraseña: 11</p>
                 <p class="profile-level">Nivel: <span id="lvl-val">0</span></p>
+                <!-- OFERTA (BID) DE MAURICIO -->
                 <p class="profile-bid-popup" id="bid-val">BID: $0</p>
                 <div class="xp-bar-container">
                     <div class="xp-bar-fill" id="xp-bar" style="width: 0%;"></div>
@@ -76,14 +77,14 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // FUNCIÓN PARA ACTUALIZAR TODO AUTOMÁTICAMENTE
+        // FUNCIÓN PARA SINCRONIZAR DATOS EN TIEMPO REAL
         function syncData() {
             db.ref('players').on('value', (snapshot) => {
                 const players = snapshot.val();
                 if (!players) return;
                 const me = players[myId];
 
-                // 1. Cargar Foto (Si existe en Firebase)
+                // 1. Cargar Foto de Perfil
                 if (me.img) {
                     const imgUrl = me.img.startsWith('data') ? me.img : '../' + me.img;
                     document.getElementById('img-preview').src = imgUrl;
@@ -93,7 +94,7 @@
                     document.getElementById('profileIcon').style.backgroundSize = 'cover';
                 }
 
-                // 2. Cargar Datos Numéricos
+                // 2. Cargar Datos Numéricos (BID, Nivel, XP)
                 document.getElementById('bid-val').textContent = "BID: $" + me.bid.toLocaleString();
                 document.getElementById('lvl-val').textContent = me.level;
                 document.getElementById('xp-bar').style.width = me.xp + "%";
@@ -101,25 +102,34 @@
 
                 // 3. Calcular Posición y Modal
                 const sorted = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
+                
+                // Posición actual de Mauricio
                 document.getElementById('pos-val').textContent = sorted.findIndex(p => p.id === myId) + 1;
 
-                document.getElementById('modalList').innerHTML = sorted.map(p => `
-                    <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold;' : ''}">
-                        <div class="player-info">
-                            <div class="player-img-wrapper">
-                                <img src="${p.img.startsWith('data') ? p.img : '../' + p.img}" alt="">
+                // Dibujar tabla del Leaderboard en el Modal
+                document.getElementById('modalList').innerHTML = sorted.map((p, index) => {
+                    const position = index + 1;
+                    const rankDisplay = (position === 1) ? `<i class="fas fa-crown crown-icon"></i>` : position;
+
+                    return `
+                        <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold;' : ''}">
+                            <div class="player-info">
+                                <div class="rank-badge">${rankDisplay}</div>
+                                <div class="player-img-wrapper">
+                                    <img src="${p.img.startsWith('data') ? p.img : '../' + p.img}" alt="img">
+                                </div>
+                                <div class="player-text-details">
+                                    <span class="player-name" ${p.id === myId ? 'style="color: #f7e018;"' : ''}>${p.name}</span>
+                                    <span class="player-bid" ${p.id === myId ? 'style="color: #f7e018;"' : ''}>BID: $${p.bid.toLocaleString()}</span>
+                                </div>
                             </div>
-                            <div class="player-text-details">
-                                <span class="player-name">${p.name}</span>
-                                <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
+                            <div class="player-stats-mini">
+                                <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                                <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
                             </div>
                         </div>
-                        <div class="player-stats-mini">
-                            <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
-                            <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             });
         }
 

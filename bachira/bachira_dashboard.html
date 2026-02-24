@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Yulien</title>
-    <!-- Corregido: Ahora busca el CSS de Bachira -->
+    <!-- Enlace al CSS específico de Bachira -->
     <link rel="stylesheet" href="bachira_dashboard_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -18,10 +18,10 @@
                 <i class="fas fa-user profile-default-icon" id="default-icon"></i> 
             </div>
             <div class="profile-popup" id="profilePopup">
-                <!-- Cambiado a Yulien -->
                 <h3>YULIEN</h3>
                 <p>Contraseña: 8</p>
                 <p class="profile-level">Nivel: <span id="lvl-val">0</span></p>
+                <!-- OFERTA (BID) DINÁMICA -->
                 <p class="profile-bid-popup" id="bid-val">BID: $0</p>
                 <div class="xp-bar-container">
                     <div class="xp-bar-fill" id="xp-bar" style="width: 0%;"></div>
@@ -37,7 +37,6 @@
 
     <main class="main-content">
         <div class="dashboard-center-content">
-            <!-- Cambiado a Yulien -->
             <h1>BIENVENIDO YULIEN</h1>
             <div class="action-bubbles-container">
                 <a href="bachira_missions.html" class="action-bubble">MISIONES</a>
@@ -47,6 +46,7 @@
         </div>
     </main>
 
+    <!-- MODAL DE LEADERBOARD DINÁMICO -->
     <div class="coming-soon-modal" id="leaderboardModal">
         <div class="leaderboard-modal-content">
             <span class="close-button" id="closeLeaderboard">&times;</span>
@@ -55,11 +55,12 @@
         </div>
     </div>
 
+    <!-- SCRIPTS DE FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // ¡IMPORTANTE! Cambiado a Bachira
+        // CONFIGURACIÓN ÚNICA DE BACHIRA
         const myId = "Bachira"; 
 
         const firebaseConfig = {
@@ -76,43 +77,63 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        function updatePage() {
+        // FUNCIÓN DE SINCRONIZACIÓN EN TIEMPO REAL
+        function syncData() {
             db.ref('players').on('value', (snapshot) => {
                 const players = snapshot.val();
                 if (!players) return;
                 const me = players[myId];
 
+                // 1. Actualizar Foto de Perfil
                 if (me.img) {
-                    document.getElementById('img-preview').src = me.img;
+                    const imgUrl = me.img.startsWith('data') ? me.img : '../' + me.img;
+                    document.getElementById('img-preview').src = imgUrl;
                     document.getElementById('img-preview').style.display = 'block';
                     document.getElementById('default-icon').style.display = 'none';
-                    document.getElementById('profileIcon').style.backgroundImage = `url(${me.img})`;
+                    document.getElementById('profileIcon').style.backgroundImage = `url(${imgUrl})`;
                     document.getElementById('profileIcon').style.backgroundSize = 'cover';
                 }
 
+                // 2. Cargar Datos Numéricos (BID, Nivel, XP)
                 document.getElementById('bid-val').textContent = "BID: $" + me.bid.toLocaleString();
                 document.getElementById('lvl-val').textContent = me.level;
                 document.getElementById('xp-bar').style.width = me.xp + "%";
                 document.getElementById('xp-text').textContent = me.xp + "/100 XP";
 
+                // 3. Calcular Posición y Generar Modal
                 const sorted = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
+                
+                // Actualizar número de posición arriba
                 document.getElementById('pos-val').textContent = sorted.findIndex(p => p.id === myId) + 1;
 
-                document.getElementById('modalList').innerHTML = sorted.map(p => `
-                    <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold;' : ''}">
-                        <div class="player-info">
-                            <div class="player-img-wrapper"><img src="${p.img.startsWith('data') ? p.img : '../' + p.img}" alt=""></div>
-                            <div class="player-text-details"><span class="player-name">${p.name}</span><span class="player-bid">BID: $${p.bid.toLocaleString()}</span></div>
+                // Dibujar tabla del Leaderboard en el Modal
+                document.getElementById('modalList').innerHTML = sorted.map((p, index) => {
+                    const position = index + 1;
+                    const rankDisplay = (position === 1) ? `<i class="fas fa-crown crown-icon"></i>` : position;
+
+                    return `
+                        <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold;' : ''}">
+                            <div class="player-info">
+                                <div class="rank-badge">${rankDisplay}</div>
+                                <div class="player-img-wrapper">
+                                    <img src="${p.img.startsWith('data') ? p.img : '../' + p.img}" alt="img">
+                                </div>
+                                <div class="player-text-details">
+                                    <span class="player-name" ${p.id === myId ? 'style="color: #f7e018;"' : ''}>${p.name}</span>
+                                    <span class="player-bid" ${p.id === myId ? 'style="color: #f7e018;"' : ''}>BID: $${p.bid.toLocaleString()}</span>
+                                </div>
+                            </div>
+                            <div class="player-stats-mini">
+                                <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                                <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
+                            </div>
                         </div>
-                        <div class="player-stats-mini">
-                            <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
-                            <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
             });
         }
 
+        // GUARDAR FOTO NUEVA EN FIREBASE
         document.getElementById('profilePicInput').addEventListener('change', (e) => {
             const reader = new FileReader();
             reader.onload = (event) => {
@@ -121,11 +142,13 @@
             reader.readAsDataURL(e.target.files[0]);
         });
 
+        // CONTROL DE INTERFAZ
         document.getElementById('profileIcon').onclick = () => document.getElementById('profilePopup').classList.toggle('active');
         document.getElementById('leaderboardBtn').onclick = () => document.getElementById('leaderboardModal').style.display = 'flex';
         document.getElementById('closeLeaderboard').onclick = () => document.getElementById('leaderboardModal').style.display = 'none';
         
-        updatePage();
+        // Iniciar sincronización
+        syncData();
     </script>
 </body>
 </html>
