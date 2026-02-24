@@ -3,81 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - Ego Jinpachi</title>
+    <title>Ego Jinpachi - Control Maestro</title>
     <link rel="stylesheet" href="ego_dashboard_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="header">
-        <div class="header-title">BLUE LOCK PROJECT</div>
-        <a href="../index.html" class="logout-btn">CERRAR SESIÓN</a>
+        <div class="header-title">BLUE LOCK PROJECT ADMIN</div>
+        <a href="../index.html" class="logout-btn">SALIR</a>
     </div>
 
     <main class="main-content">
-        <h1>CONTROL ABSOLUTO</h1>
+        <h1>SISTEMA DE EVOLUCIÓN</h1>
         <div id="egoQuoteDashboard" class="ego-quote-dashboard">"El talento sin pulir es solo basura."</div>
 
-        <!-- SECCIÓN 1: RULETA 100% ALEATORIA -->
+        <!-- 1. GESTIÓN SEMANAL Y TROFEOS -->
         <div class="admin-section">
-            <h2>RULETA DE EQUIPOS (AZAR TOTAL)</h2>
-            <button id="generateBtn" class="generate-button">
-                <i class="fas fa-random"></i> GENERAR PARTIDO
+            <h2>PREMIACIÓN Y CIERRE DE SEMANA</h2>
+            <select id="winnerSelect" class="input-field">
+                <option value="">-- Seleccionar Ganador de la Semana --</option>
+            </select>
+            <input type="text" id="weekTitle" class="input-field" placeholder="Nombre del Trofeo (Ej: Ganador Semana 2)">
+            <button id="giveTrophyBtn" class="trophy-btn">
+                <i class="fas fa-trophy"></i> DAR TROFEO Y REINICIAR TABLA SEMANAL
             </button>
+        </div>
 
-            <div class="teams-container" id="teamsContainer" style="display: none;">
-                <div class="team-card team-a">
-                    <h2>EQUIPO A</h2>
-                    <div class="team-members" id="teamAList"></div>
+        <!-- 2. EDITOR MAESTRO DE JUGADORES -->
+        <div class="admin-section">
+            <h2>MODO DIOS: EDITOR DE ESTADÍSTICAS</h2>
+            <select id="playerSelect" class="input-field">
+                <option value="">-- Seleccionar Jugador --</option>
+                <option value="Rin">Ernesto (Rin)</option>
+                <option value="Nagi">Kevin (Nagi)</option>
+                <option value="Bachira">Yulien (Bachira)</option>
+                <option value="Kunigami">Manuel (Kunigami)</option>
+                <option value="Isagi">Mauricio (Isagi)</option>
+                <option value="Gagamaru">Deadpool (Gagamaru)</option>
+            </select>
+
+            <div id="editorForm" style="display: none; width: 100%;">
+                <div class="editor-grid">
+                    <!-- Rendimiento Físico y Goles -->
+                    <div class="editor-box">
+                        <h3 style="color: var(--highlight-gold);">DATOS DE PARTIDO</h3>
+                        <div class="input-row"><label>Partidos Totales</label><input type="number" id="edit_pj" class="input-field min-input"></div>
+                        <div class="input-row"><label>Ganados</label><input type="number" id="edit_pg" class="input-field min-input"></div>
+                        <div class="input-row"><label>Perdidos</label><input type="number" id="edit_pp" class="input-field min-input"></div>
+                        <div class="input-row"><label>Goles Totales</label><input type="number" id="edit_g" class="input-field min-input"></div>
+                    </div>
+
+                    <!-- Habilidades -->
+                    <div class="editor-box">
+                        <h3 style="color: var(--electric-blue);">HABILIDADES</h3>
+                        <div class="input-row"><label>Ritmo</label><input type="number" id="edit_ritmo" class="input-field min-input"></div>
+                        <div class="input-row"><label>Tiro</label><input type="number" id="edit_tiro" class="input-field min-input"></div>
+                        <div class="input-row"><label>Pase</label><input type="number" id="edit_pase" class="input-field min-input"></div>
+                        <div class="input-row"><label>Regate</label><input type="number" id="edit_regate" class="input-field min-input"></div>
+                        <div class="input-row"><label>Defensa</label><input type="number" id="edit_defensa" class="input-field min-input"></div>
+                        <div class="input-row"><label>Físico</label><input type="number" id="edit_fisico" class="input-field min-input"></div>
+                    </div>
                 </div>
-                <div class="vs-divider">VS</div>
-                <div class="team-card team-b">
-                    <h2>EQUIPO B</h2>
-                    <div class="team-members" id="teamBList"></div>
-                </div>
+                <button id="savePlayerBtn" class="save-button">GUARDAR Y SINCRONIZAR NUBE</button>
             </div>
         </div>
 
-        <!-- SECCIÓN 2: EDITOR DE JUGADORES (MODO DIOS) -->
+        <!-- 3. RULETA -->
         <div class="admin-section">
-            <h2>EDITOR DE ESTADÍSTICAS</h2>
-            <div class="editor-container">
-                <label for="playerSelect">SELECCIONAR JUGADOR PARA EDITAR:</label>
-                <select id="playerSelect" class="input-field">
-                    <option value="">-- Elige un Jugador --</option>
-                    <option value="Rin">Ernesto (Rin)</option>
-                    <option value="Nagi">Kevin (Nagi)</option>
-                    <option value="Bachira">Yulien (Bachira)</option>
-                    <option value="Kunigami">Manuel (Kunigami)</option>
-                    <option value="Isagi">Mauricio (Isagi)</option>
-                    <option value="Gagamaru">Deadpool (Gagamaru)</option>
-                </select>
-
-                <div id="editorForm" style="display: none; width: 100%;">
-                    <div class="editor-grid">
-                        <!-- RENDIMIENTO -->
-                        <div class="editor-box">
-                            <h3 style="color: var(--highlight-gold);">PARTIDOS Y GOLES</h3>
-                            <div class="input-row"><label>PJ (Jugados)</label><input type="number" id="edit_pj" class="input-field min-input"></div>
-                            <div class="input-row"><label>PG (Ganados)</label><input type="number" id="edit_pg" class="input-field min-input"></div>
-                            <div class="input-row"><label>PP (Perdidos)</label><input type="number" id="edit_pp" class="input-field min-input"></div>
-                            <div class="input-row"><label>G (Goles Totales)</label><input type="number" id="edit_g" class="input-field min-input"></div>
-                        </div>
-
-                        <!-- HABILIDADES -->
-                        <div class="editor-box">
-                            <h3 style="color: var(--electric-blue);">HABILIDADES (0-99)</h3>
-                            <div class="input-row"><label>Ritmo</label><input type="number" id="edit_ritmo" class="input-field min-input"></div>
-                            <div class="input-row"><label>Tiro</label><input type="number" id="edit_tiro" class="input-field min-input"></div>
-                            <div class="input-row"><label>Pase</label><input type="number" id="edit_pase" class="input-field min-input"></div>
-                            <div class="input-row"><label>Regate</label><input type="number" id="edit_regate" class="input-field min-input"></div>
-                            <div class="input-row"><label>Defensa</label><input type="number" id="edit_defensa" class="input-field min-input"></div>
-                            <div class="input-row"><label>Físico</label><input type="number" id="edit_fisico" class="input-field min-input"></div>
-                        </div>
-                    </div>
-                    <button id="savePlayerBtn" class="save-button">GUARDAR Y SINCRONIZAR NUBE</button>
-                </div>
-            </div>
+            <h2>RULETA ALEATORIA</h2>
+            <button id="generateBtn" class="generate-button">GENERAR EQUIPOS 3 VS 3</button>
+            <div id="teamsDisplay" class="teams-container"></div>
         </div>
     </main>
 
@@ -102,44 +98,19 @@
         const playersRef = db.ref('players');
         let players = {};
 
-        // 1. CARGAR DATOS EN TIEMPO REAL
+        // 1. CARGAR DATOS
         playersRef.on('value', (snapshot) => {
             players = snapshot.val();
+            if (!players) return;
+
+            const sel = document.getElementById('winnerSelect');
+            const val = sel.value;
+            sel.innerHTML = '<option value="">-- Seleccionar Ganador --</option>' + 
+                Object.values(players).map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            sel.value = val;
         });
 
-        // 2. RULETA 100% ALEATORIA (SIN TIERS)
-        document.getElementById('generateBtn').onclick = () => {
-            const container = document.getElementById('teamsContainer');
-            const listA = document.getElementById('teamAList');
-            const listB = document.getElementById('teamBList');
-            
-            container.style.display = 'none';
-            listA.innerHTML = '';
-            listB.innerHTML = '';
-
-            setTimeout(() => {
-                container.style.display = 'flex';
-                let pool = Object.values(players);
-                
-                // Mezcla total
-                for (let i = pool.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [pool[i], pool[j]] = [pool[j], pool[i]];
-                }
-
-                const teamA = pool.slice(0, 3);
-                const teamB = pool.slice(3, 6);
-
-                teamA.forEach((p, i) => {
-                    setTimeout(() => {
-                        listA.innerHTML += `<div class="player-slot animate-pop"><span>${p.name}</span></div>`;
-                        listB.innerHTML += `<div class="player-slot animate-pop"><span>${teamB[i].name}</span></div>`;
-                    }, i * 400);
-                });
-            }, 100);
-        };
-
-        // 3. EDITOR DE JUGADORES
+        // 2. LÓGICA DEL EDITOR
         const pSelect = document.getElementById('playerSelect');
         const eForm = document.getElementById('editorForm');
 
@@ -164,41 +135,72 @@
             const id = pSelect.value;
             const p = players[id];
 
-            // Guardar valores del formulario
-            p.matchStats.pj = parseInt(document.getElementById('edit_pj').value);
-            p.matchStats.pg = parseInt(document.getElementById('edit_pg').value);
-            p.matchStats.pp = parseInt(document.getElementById('edit_pp').value);
-            p.matchStats.g = parseInt(document.getElementById('edit_g').value);
-            p.stats.ritmo = parseInt(document.getElementById('edit_ritmo').value);
-            p.stats.tiro = parseInt(document.getElementById('edit_tiro').value);
-            p.stats.pase = parseInt(document.getElementById('edit_pase').value);
-            p.stats.regate = parseInt(document.getElementById('edit_regate').value);
-            p.stats.defensa = parseInt(document.getElementById('edit_defensa').value);
-            p.stats.fisico = parseInt(document.getElementById('edit_fisico').value);
+            // Cálculo para la tabla semanal automática
+            const oldTotalGoles = p.matchStats.g;
+            const newTotalGoles = parseInt(document.getElementById('edit_g').value) || 0;
+            const difGoles = newTotalGoles - oldTotalGoles;
 
-            // --- AUTO CÁLCULOS ---
-            // Dinero: $10M por gol + $5M por victoria
+            if (difGoles > 0) {
+                if (!p.weeklyStats) p.weeklyStats = { g: 0, pg: 0, pj: 0 };
+                p.weeklyStats.g += difGoles;
+            }
+
+            // Actualizar Global
+            p.matchStats.pj = parseInt(document.getElementById('edit_pj').value) || 0;
+            p.matchStats.pg = parseInt(document.getElementById('edit_pg').value) || 0;
+            p.matchStats.pp = parseInt(document.getElementById('edit_pp').value) || 0;
+            p.matchStats.g = newTotalGoles;
+
+            // Actualizar Habilidades
+            p.stats.ritmo = parseInt(document.getElementById('edit_ritmo').value) || 0;
+            p.stats.tiro = parseInt(document.getElementById('edit_tiro').value) || 0;
+            p.stats.pase = parseInt(document.getElementById('edit_pase').value) || 0;
+            p.stats.regate = parseInt(document.getElementById('edit_regate').value) || 0;
+            p.stats.defensa = parseInt(document.getElementById('edit_defensa').value) || 0;
+            p.stats.fisico = parseInt(document.getElementById('edit_fisico').value) || 0;
+
+            // Auto-cálculos de Dinero y Media
             p.bid = (p.matchStats.g * 10000000) + (p.matchStats.pg * 5000000);
-            
-            // Media: Promedio de habilidades
             p.stats.media = Math.round((p.stats.ritmo + p.stats.tiro + p.stats.pase + p.stats.regate + p.stats.defensa + p.stats.fisico) / 6);
-
-            // XP: Basado en los goles y victorias totales (ejemplo: cada gol 5xp, cada victoria 10xp)
+            
+            // Cálculo de XP
             p.xp = (p.matchStats.g * 5) + (p.matchStats.pg * 10);
             if (p.xp >= 100) {
                 p.level = Math.floor(p.xp / 100);
                 p.xp = p.xp % 100;
             }
 
-            // SUBIR A FIREBASE
+            playersRef.set(players).then(() => alert("Sincronizado correctamente."));
+        };
+
+        // 3. LÓGICA DE TROFEOS Y REINICIO SEMANAL
+        document.getElementById('giveTrophyBtn').onclick = () => {
+            const vid = document.getElementById('winnerSelect').value;
+            const title = document.getElementById('weekTitle').value;
+            if (!vid || !title) return alert("Selecciona ganador y nombre del trofeo.");
+
+            if (!players[vid].trophies) players[vid].trophies = [];
+            players[vid].trophies.push({ title: title, icon: "fas fa-trophy", color: "#f7e018" });
+
+            // Reiniciar semanal de TODOS
+            Object.keys(players).forEach(k => {
+                players[k].weeklyStats = { g: 0, pg: 0, pj: 0 };
+            });
+
             playersRef.set(players).then(() => {
-                alert(`¡${p.name} actualizado!\nBID: $${p.bid.toLocaleString()}\nMedia: ${p.stats.media}`);
+                alert("Trofeo entregado y tabla semanal reseteada.");
+                document.getElementById('weekTitle').value = "";
             });
         };
 
-        // Frases aleatorias
-        const quotes = ["El talento sin pulir es solo basura.", "Despierta, delantero.", "Rompe tus cadenas.", "El gol es el producto de un ego inmenso."];
-        document.getElementById('egoQuoteDashboard').innerText = `"${quotes[Math.floor(Math.random()*quotes.length)]}"`;
+        // 4. RULETA
+        document.getElementById('generateBtn').onclick = () => {
+            let pool = Object.values(players).sort(() => Math.random() - 0.5);
+            document.getElementById('teamsDisplay').innerHTML = `
+                <div class="team-card"><h3>EQUIPO A</h3>${pool.slice(0,3).map(p=>`<p class="player-slot">${p.name}</p>`).join('')}</div>
+                <div class="team-card" style="border-color:var(--ego-red)"><h3>EQUIPO B</h3>${pool.slice(3,6).map(p=>`<p class="player-slot">${p.name}</p>`).join('')}</div>
+            `;
+        };
     </script>
 </body>
 </html>

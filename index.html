@@ -3,54 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Leaderboard - Blue Lock</title>
+    <title>Blue Lock - Proyecto Egoísta</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Fuentes de Google Fonts -->
+    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome para iconos (Ojo, Corona, etc.) -->
+    <!-- Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="main-wrapper">
-        <!-- Sección de Login -->
+        <!-- SECCIÓN DE LOGIN -->
         <div class="login-container">
             <h2>ACCESO EXCLUSIVO</h2>
-            <div id="egoQuote" class="ego-quote">"El talento sin pulir es solo basura."</div>
+            <div id="egoQuote" class="ego-quote">"Sincronizando..."</div>
             
             <form id="loginForm">
                 <div class="input-group">
-                    <label for="username">USUARIO</label>
+                    <label>USUARIO</label>
                     <input type="text" id="username" placeholder="Nombre del jugador" required>
                 </div>
                 <div class="input-group">
-                    <label for="password">CONTRASEÑA</label>
+                    <label>CONTRASEÑA</label>
                     <div class="password-input-wrapper">
                         <input type="password" id="password" placeholder="••••" required>
-                        <span class="toggle-password" id="togglePassword">
-                            <i class="fas fa-eye"></i>
-                        </span>
+                        <span class="toggle-password" id="togglePassword"><i class="fas fa-eye"></i></span>
                     </div>
                 </div>
                 <button type="submit">INICIAR SESIÓN</button>
             </form>
         </div>
 
-        <!-- Sección: Leaderboard Global -->
+        <!-- LEADERBOARD GLOBAL -->
         <div class="global-leaderboard">
             <h3>CLASIFICACIÓN GLOBAL</h3>
             <div id="leaderboardContent">
-                <!-- Se carga dinámicamente desde Firebase -->
-                <p style="text-align: center; color: var(--text-muted);">Cargando datos del proyecto...</p>
+                <p style="text-align: center; color: var(--text-muted); font-family: 'Orbitron';">Cargando datos...</p>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPTS DE FIREBASE (Versión CDN compatible con HTML directo) -->
+    <!-- MODAL DE INSPECCIÓN DE PERFIL -->
+    <div id="inspectModal" class="inspect-modal">
+        <div class="inspect-content">
+            <span class="close-inspect" id="closeInspect">&times;</span>
+            <div class="inspect-img"><img id="inspectImg" src="" alt=""></div>
+            <div id="inspectName" class="inspect-name">NOMBRE</div>
+            <p style="color: var(--electric-blue); font-size: 0.8em; margin-bottom: 10px; font-family: 'Orbitron';">COPAS SEMANALES</p>
+            <div class="cups-container">
+                <i class="fas fa-trophy cup-icon-big"></i>
+                <span id="inspectCups" class="cup-count">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // CONFIGURACIÓN DE TU FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
             authDomain: "bluelock-proyecto.firebaseapp.com",
@@ -62,41 +72,34 @@
             measurementId: "G-XE8F4KS1CJ"
         };
 
-        // Inicializar Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        let allPlayers = {}; // Aquí guardaremos los datos descargados
+        let allPlayers = {};
 
-        // --- 1. ESCUCHAR CAMBIOS EN LA NUBE (TIEMPO REAL) ---
+        // Escuchar cambios en tiempo real
         db.ref('players').on('value', (snapshot) => {
             allPlayers = snapshot.val();
             if (allPlayers) {
-                renderLeaderboard(allPlayers);
-                // Guardar copia local para el login
                 localStorage.setItem('blPlayersData', JSON.stringify(allPlayers));
+                renderLeaderboard(allPlayers);
             }
         });
 
-        // --- 2. FUNCIÓN PARA DIBUJAR LA TABLA ---
         function renderLeaderboard(players) {
             const container = document.getElementById('leaderboardContent');
-            // Ordenar por Goles (G), luego por Ganados (PG) como desempate
+            // Ordenar por goles, luego por victorias
             const sorted = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
 
             container.innerHTML = sorted.map((p, index) => {
                 const position = index + 1;
-                // Si es el 1º pone corona, si no, el número
-                const rankDisplay = (position === 1) 
-                    ? `<i class="fas fa-crown crown-icon"></i>` 
-                    : position;
+                const isFirst = position === 1;
+                const rankDisplay = isFirst ? '<i class="fas fa-crown crown-icon"></i>' : position;
 
                 return `
-                    <div class="player-row">
+                    <div class="player-row" onclick="inspectPlayer('${p.id}')">
                         <div class="player-info">
                             <div class="rank-badge">${rankDisplay}</div>
-                            <div class="player-img-wrapper">
-                                <img src="${p.img.startsWith('data') ? p.img : p.img}" alt="img">
-                            </div>
+                            <div class="player-img-wrapper"><img src="${p.img}"></div>
                             <div class="player-text-details">
                                 <span class="player-name">${p.name}</span>
                                 <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
@@ -106,55 +109,39 @@
                             <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
                             <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
         }
 
-        // --- 3. LÓGICA DE LOGIN ---
+        function inspectPlayer(playerId) {
+            const p = allPlayers[playerId];
+            if(!p) return;
+            document.getElementById('inspectName').textContent = p.name;
+            document.getElementById('inspectImg').src = p.img;
+            document.getElementById('inspectCups').textContent = p.trophies ? p.trophies.length : 0;
+            document.getElementById('inspectModal').style.display = 'flex';
+        }
+
+        document.getElementById('closeInspect').onclick = () => document.getElementById('inspectModal').style.display = 'none';
+        
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
-
-            // Caso Admin: Ego
-            if (user === 'Ego' && pass === '123') {
-                window.location.href = 'ego/ego_dashboard.html';
-                return;
-            }
-
-            // Caso Jugadores: Buscar en los datos bajados de Firebase
-            if (allPlayers[user]) {
-                if (allPlayers[user].password === pass) {
-                    window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
-                } else {
-                    alert('Contraseña incorrecta para ' + user);
-                }
-            } else {
-                alert('El usuario no existe o los datos aún se están cargando.');
-            }
+            if (user === 'Ego' && pass === '123') { window.location.href = 'ego/ego_dashboard.html'; return; }
+            if (allPlayers[user] && allPlayers[user].password === pass) {
+                window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
+            } else { alert('Credenciales incorrectas'); }
         };
 
-        // --- 4. INTERFAZ (OJO Y FRASES) ---
         document.getElementById('togglePassword').onclick = function() {
             const input = document.getElementById('password');
-            const icon = this.querySelector('i');
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
-            } else {
-                input.type = "password";
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
-            }
+            input.type = input.type === "password" ? "text" : "password";
+            this.querySelector('i').classList.toggle('fa-eye');
+            this.querySelector('i').classList.toggle('fa-eye-slash');
         };
 
-        const egoQuotes = [
-            "El talento sin pulir es solo basura.",
-            "Despierta, delantero.",
-            "Rompe tus cadenas.",
-            "Solo un loco puede cambiar el mundo.",
-            "El fútbol es el deporte de los genios egoístas."
-        ];
+        const egoQuotes = ["El talento sin pulir es basura.", "Despierta, delantero.", "Rompe tus cadenas.", "El fútbol es para egoístas."];
         document.getElementById('egoQuote').textContent = `"${egoQuotes[Math.floor(Math.random() * egoQuotes.length)]}"`;
     </script>
 </body>

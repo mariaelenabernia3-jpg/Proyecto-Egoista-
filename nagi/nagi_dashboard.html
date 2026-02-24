@@ -7,50 +7,65 @@
     <!-- Enlace al CSS específico de Nagi -->
     <link rel="stylesheet" href="nagi_dashboard_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome para iconos (Corona, Trofeo, etc.) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <div class="header">
-        <div class="position-display">POSICIÓN: <span id="pos-val">--</span></div>
-        <div class="profile-area">
-            <div class="profile-icon" id="profileIcon">
-                <img src="" id="img-preview" class="profile-pic-preview" style="display: none;">
-                <i class="fas fa-user profile-default-icon" id="default-icon"></i> 
+        <div class="position-display">RANKING: <span id="pos-val">--</span></div>
+        <div class="profile-icon" id="profileIcon">
+            <img src="" id="img-preview" class="profile-pic-preview" style="display:none">
+            <i class="fas fa-user profile-default-icon" id="default-icon"></i> 
+        </div>
+        <div class="profile-popup" id="profilePopup">
+            <h3>KEVIN</h3>
+            <p id="bid-val" class="profile-bid-popup">$0</p>
+            <p class="profile-level">NIVEL <span id="lvl-val">0</span></p>
+            <div class="xp-bar-container">
+                <div class="xp-bar-fill" id="xp-bar" style="width:0%"></div>
             </div>
-            <div class="profile-popup" id="profilePopup">
-                <h3>KEVIN</h3>
-                <p>Contraseña: 7</p>
-                <p class="profile-level">Nivel: <span id="lvl-val">0</span></p>
-                <!-- OFERTA (BID) DINÁMICA -->
-                <p class="profile-bid-popup" id="bid-val">BID: $0</p>
-                <div class="xp-bar-container">
-                    <div class="xp-bar-fill" id="xp-bar" style="width: 0%;"></div>
-                    <span class="xp-text" id="xp-text">0/100 XP</span>
-                </div>
-                <div class="profile-pic-uploader">
-                    <label for="profilePicInput" class="upload-button"><i class="fas fa-camera"></i> Cambiar Foto</label>
-                    <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
-                </div>
+            <span class="xp-text" id="xp-text-val">0/100 XP</span>
+            
+            <div class="profile-pic-uploader">
+                <label for="profilePicInput" class="upload-button">CAMBIAR FOTO</label>
+                <input type="file" id="profilePicInput" accept="image/*" style="display:none">
             </div>
         </div>
     </div>
 
     <main class="main-content">
-        <div class="dashboard-center-content">
-            <h1>BIENVENIDO KEVIN</h1>
-            <div class="action-bubbles-container">
-                <a href="nagi_missions.html" class="action-bubble">MISIONES</a>
-                <a href="nagi_stats.html" class="action-bubble">ESTADÍSTICAS</a>
-                <div class="action-bubble" id="leaderboardBtn">LEADERBOARD</div>
+        <h1>BIENVENIDO KEVIN</h1>
+
+        <div class="weekly-container">
+            <!-- VITRINA DE TROFEOS -->
+            <div class="trophy-room">
+                <h3>VITRINA DE TROFEOS</h3>
+                <div id="trophyList" class="trophy-icons">
+                    <!-- Se carga dinámicamente -->
+                </div>
             </div>
+
+            <!-- TABLA SEMANAL -->
+            <div class="weekly-table">
+                <h3>BATALLA DE LA SEMANA</h3>
+                <div id="weeklyList">
+                    <!-- Se carga dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bubbles-container">
+            <a href="nagi_missions.html" class="action-bubble">MISIONES</a>
+            <a href="nagi_stats.html" class="action-bubble">ESTADÍSTICAS</a>
+            <div class="action-bubble" id="leaderboardBtn">LEADERBOARD</div>
         </div>
     </main>
 
-    <!-- MODAL DE LEADERBOARD DINÁMICO -->
+    <!-- MODAL DE RANKING GLOBAL -->
     <div class="coming-soon-modal" id="leaderboardModal">
         <div class="leaderboard-modal-content">
             <span class="close-button" id="closeLeaderboard">&times;</span>
-            <h3 class="leaderboard-title">CLASIFICACIÓN GLOBAL</h3>
+            <h3 class="leaderboard-title">RANKING MUNDIAL</h3>
             <div id="modalList"></div>
         </div>
     </div>
@@ -77,78 +92,91 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // FUNCIÓN DE SINCRONIZACIÓN EN TIEMPO REAL
-        function syncData() {
-            db.ref('players').on('value', (snapshot) => {
-                const players = snapshot.val();
-                if (!players) return;
-                const me = players[myId];
+        // ESCUCHAR CAMBIOS EN TIEMPO REAL
+        db.ref('players').on('value', (snapshot) => {
+            const players = snapshot.val();
+            if(!players) return;
+            const me = players[myId];
 
-                // 1. Actualizar Foto de Perfil
-                if (me.img) {
-                    const imgUrl = me.img.startsWith('data') ? me.img : '../' + me.img;
-                    document.getElementById('img-preview').src = imgUrl;
-                    document.getElementById('img-preview').style.display = 'block';
-                    document.getElementById('default-icon').style.display = 'none';
-                    document.getElementById('profileIcon').style.backgroundImage = `url(${imgUrl})`;
-                    document.getElementById('profileIcon').style.backgroundSize = 'cover';
-                }
+            // 1. Datos del Popup (BID, Nivel, XP)
+            document.getElementById('bid-val').textContent = "$" + me.bid.toLocaleString();
+            document.getElementById('lvl-val').textContent = me.level;
+            document.getElementById('xp-bar').style.width = me.xp + "%";
+            document.getElementById('xp-text-val').textContent = me.xp + "/100 XP";
 
-                // 2. Cargar Datos Numéricos (BID, Nivel, XP)
-                document.getElementById('bid-val').textContent = "BID: $" + me.bid.toLocaleString();
-                document.getElementById('lvl-val').textContent = me.level;
-                document.getElementById('xp-bar').style.width = me.xp + "%";
-                document.getElementById('xp-text').textContent = me.xp + "/100 XP";
+            // 2. Cargar Foto
+            if(me.img) {
+                const imgUrl = me.img.startsWith('data') ? me.img : '../' + me.img;
+                document.getElementById('img-preview').src = imgUrl;
+                document.getElementById('img-preview').style.display = 'block';
+                document.getElementById('default-icon').style.display = 'none';
+                document.getElementById('profileIcon').style.backgroundImage = `url(${imgUrl})`;
+                document.getElementById('profileIcon').style.backgroundSize = 'cover';
+            }
 
-                // 3. Calcular Posición y Generar Modal
-                const sorted = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
-                
-                // Actualizar número de posición arriba
-                document.getElementById('pos-val').textContent = sorted.findIndex(p => p.id === myId) + 1;
+            // 3. Renderizar Trofeos
+            document.getElementById('trophyList').innerHTML = (me.trophies && me.trophies.length > 0) 
+                ? me.trophies.map(t => `<div class="trophy-item"><i class="${t.icon}" style="color:${t.color}"></i><span>${t.title}</span></div>`).join('') 
+                : '<p style="font-size:0.7em; color:#666;">Aún no tienes trofeos.</p>';
 
-                // Dibujar tabla del Leaderboard en el Modal
-                document.getElementById('modalList').innerHTML = sorted.map((p, index) => {
-                    const position = index + 1;
-                    const rankDisplay = (position === 1) ? `<i class="fas fa-crown crown-icon"></i>` : position;
+            // 4. Renderizar Tabla Semanal
+            const sortedWeekly = Object.values(players).sort((a,b) => b.weeklyStats.g - a.weeklyStats.g);
+            document.getElementById('weeklyList').innerHTML = sortedWeekly.map((p, i) => `
+                <div class="weekly-list-item ${p.id === myId ? 'highlight' : ''}">
+                    <span>${i+1}. ${p.name}</span><span>${p.weeklyStats.g} Goles</span>
+                </div>`).join('');
 
-                    return `
-                        <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold;' : ''}">
-                            <div class="player-info">
-                                <div class="rank-badge">${rankDisplay}</div>
-                                <div class="player-img-wrapper">
-                                    <img src="${p.img.startsWith('data') ? p.img : '../' + p.img}" alt="img">
-                                </div>
-                                <div class="player-text-details">
-                                    <span class="player-name" ${p.id === myId ? 'style="color: #f7e018;"' : ''}>${p.name}</span>
-                                    <span class="player-bid" ${p.id === myId ? 'style="color: #f7e018;"' : ''}>BID: $${p.bid.toLocaleString()}</span>
-                                </div>
+            // 5. Ranking Global y Modal (Diseño Corregido)
+            const sortedGlobal = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
+            
+            // Posición de Kevin
+            document.getElementById('pos-val').textContent = sortedGlobal.findIndex(p => p.id === myId) + 1;
+            
+            // Tabla del Modal corregida
+            document.getElementById('modalList').innerHTML = sortedGlobal.map((p, i) => {
+                const position = i + 1;
+                const isFirst = position === 1;
+                const rankDisplay = isFirst ? '<i class="fas fa-crown crown-icon"></i>' : position;
+
+                return `
+                    <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold' : ''}">
+                        <div class="player-info">
+                            <div class="rank-badge">${rankDisplay}</div>
+                            <div class="player-img-wrapper">
+                                <img src="${p.img.startsWith('data') ? p.img : '../'+p.img}">
                             </div>
-                            <div class="player-stats-mini">
-                                <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
-                                <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
+                            <div class="player-text-details">
+                                <span class="player-name" ${p.id === myId ? 'style="color:#f7e018"' : ''}>${p.name}</span>
+                                <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
                             </div>
                         </div>
-                    `;
-                }).join('');
-            });
-        }
-
-        // GUARDAR FOTO NUEVA EN FIREBASE
-        document.getElementById('profilePicInput').addEventListener('change', (e) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                db.ref('players/' + myId).update({ img: event.target.result });
-            };
-            reader.readAsDataURL(e.target.files[0]);
+                        <div class="player-stats-mini">
+                            <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                            <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
+                        </div>
+                    </div>`;
+            }).join('');
         });
 
-        // CONTROL DE INTERFAZ
+        // Subida de Foto
+        document.getElementById('profilePicInput').onchange = (e) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                db.ref('players/' + myId).update({ img: ev.target.result });
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        };
+
+        // Interfaz
         document.getElementById('profileIcon').onclick = () => document.getElementById('profilePopup').classList.toggle('active');
         document.getElementById('leaderboardBtn').onclick = () => document.getElementById('leaderboardModal').style.display = 'flex';
         document.getElementById('closeLeaderboard').onclick = () => document.getElementById('leaderboardModal').style.display = 'none';
         
-        // Iniciar sincronización
-        syncData();
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('leaderboardModal')) {
+                document.getElementById('leaderboardModal').style.display = 'none';
+            }
+        };
     </script>
 </body>
 </html>

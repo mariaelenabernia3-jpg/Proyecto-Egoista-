@@ -6,53 +6,70 @@
     --highlight-gold: #f7e018; --bid-color: #ffd700;
 }
 
-body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+body { font-family: 'Montserrat', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; flex-direction: column; min-height: 100vh; align-items: center;}
 
-.header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-medium); box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+.header { width:100%; display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--bg-medium); box-shadow: 0 2px 10px rgba(0,0,0,0.5); box-sizing: border-box;}
 .position-display { font-family: 'Orbitron'; color: var(--electric-blue); font-weight: bold; }
 
-.profile-icon { width: 50px; height: 50px; border-radius: 50%; background: var(--accent-blue); cursor: pointer; border: 2px solid var(--electric-blue); overflow: hidden; }
+.profile-icon { width: 50px; height: 50px; border-radius: 50%; background: var(--accent-blue); cursor: pointer; border: 2px solid var(--electric-blue); overflow: hidden; position: relative; }
 .profile-pic-preview { width: 100%; height: 100%; object-fit: cover; }
 
 .profile-popup {
     position: absolute; top: 80px; right: 20px; background: var(--bg-medium);
     padding: 20px; border-radius: 10px; border: 1px solid var(--accent-blue);
-    display: none; flex-direction: column; align-items: center; z-index: 1000;
+    display: none; flex-direction: column; align-items: center; z-index: 1000; box-shadow: 0 0 20px black;
 }
 .profile-popup.active { display: flex; }
-.profile-bid-popup { font-family: 'Orbitron'; color: var(--bid-color); margin: 10px 0; }
+.profile-bid-popup { font-family: 'Orbitron'; color: var(--bid-color); margin: 10px 0; font-size: 0.9em; }
 
-/* --- BARRA XP --- */
-.xp-bar-container { width: 150px; height: 12px; background: #111; border-radius: 10px; position: relative; overflow: hidden; }
-.xp-bar-fill { height: 100%; background: var(--electric-blue); transition: 0.5s; }
-.xp-text { font-size: 0.7em; font-family: 'Orbitron'; margin-top: 5px; }
+.xp-bar-container { width: 150px; height: 12px; background: #111; border-radius: 10px; position: relative; overflow: hidden; border: 1px solid #333; }
+.xp-bar-fill { height: 100%; background: linear-gradient(90deg, #007bff, var(--electric-blue)); transition: 0.5s; }
+.xp-text { font-size: 0.65em; font-family: 'Orbitron'; margin-top: 5px; color: var(--text-muted); }
 
-.main-content { flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-direction: column; padding: 20px; }
-h1 { font-family: 'Orbitron'; font-size: 2.5em; text-shadow: 0 0 10px var(--electric-blue); text-align: center; }
+.main-content { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; padding: 20px; box-sizing: border-box; }
+h1 { font-family: 'Orbitron'; font-size: 2.2em; text-shadow: 0 0 10px var(--electric-blue); text-align: center; margin-bottom: 30px; }
 
-.action-bubbles-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 30px; }
-.action-bubble {
-    background: var(--bg-medium); border: 1px solid var(--electric-blue); padding: 20px 40px;
-    border-radius: 15px; color: var(--electric-blue); font-family: 'Orbitron';
-    text-decoration: none; font-weight: bold; transition: 0.3s; cursor: pointer;
-}
-.action-bubble:hover { background: var(--electric-blue); color: var(--bg-dark); transform: scale(1.1); }
+.weekly-container { display: flex; gap: 20px; width: 100%; margin-bottom: 30px; }
+.trophy-room, .weekly-table { background: rgba(15, 52, 96, 0.4); border: 1px solid var(--accent-blue); border-radius: 12px; padding: 20px; flex: 1; min-height: 200px; }
+.trophy-room h3, .weekly-table h3 { font-family: 'Orbitron'; font-size: 0.8em; color: var(--electric-blue); text-align: center; margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
 
-/* --- MODAL LEADERBOARD --- */
-.coming-soon-modal {
-    display: none; position: fixed; top:0; left:0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 2000;
-}
-.leaderboard-modal-content { background: var(--bg-medium); padding: 20px; border-radius: 15px; width: 90%; max-width: 450px; border: 2px solid var(--electric-blue); }
-.close-button { float: right; font-size: 2em; cursor: pointer; }
+.trophy-icons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 15px; }
+.trophy-item { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 80px; }
+.trophy-item i { font-size: 2.5em; filter: drop-shadow(0 0 8px currentColor); margin-bottom: 8px; }
+.trophy-item span { font-size: 0.6em; font-weight: bold; text-transform: uppercase; }
 
-/* Reutilizar clases de player-row, rank-badge y crown-icon del style.css aquí */
-.player-row { display: flex; align-items: center; background: rgba(255,255,255,0.05); margin-bottom: 8px; padding: 8px; border-radius: 5px; }
-.rank-badge { font-family: 'Orbitron'; width: 30px; margin-right: 10px; color: var(--electric-blue); font-weight: bold; text-align: center; }
-.crown-icon { color: gold; }
+.weekly-list-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8em; }
+.weekly-list-item.highlight { color: var(--highlight-gold); font-weight: bold; }
+
+.action-bubbles-container { display: flex; gap: 15px; justify-content: center; width: 100%; }
+.action-bubble { background: var(--bg-medium); border: 1px solid var(--electric-blue); padding: 15px 30px; border-radius: 12px; color: var(--electric-blue); font-family: 'Orbitron'; text-decoration: none; font-weight: bold; transition: 0.3s; }
+.action-bubble:hover { background: var(--electric-blue); color: var(--bg-dark); transform: translateY(-5px); }
+
+/* --- FIX PARA LA TABLA GLOBAL (ARREGLO DEFINITIVO) --- */
+.coming-soon-modal { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(5px); }
+.leaderboard-modal-content { background: var(--bg-medium); padding: 25px; border-radius: 15px; width: 95%; max-width: 500px; border: 2px solid var(--electric-blue); box-shadow: 0 0 30px var(--electric-blue); max-height: 80vh; overflow-y: auto; }
+.close-button { float: right; font-size: 2em; cursor: pointer; color: var(--text-muted); }
+
+.player-row { display: flex; justify-content: space-between; align-items: center; background: rgba(15, 52, 96, 0.5); padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--electric-blue); width: 100%; box-sizing: border-box;}
 .player-info { display: flex; align-items: center; gap: 10px; flex-grow: 1; }
-.player-img-wrapper { width: 35px; height: 35px; border-radius: 50%; overflow: hidden; border: 1px solid white; }
+.rank-badge { font-family: 'Orbitron'; width: 30px; text-align: center; color: var(--electric-blue); font-weight: bold; }
+.crown-icon { color: gold; font-size: 1.2em; animation: pulse 1s infinite alternate; }
+
+.player-img-wrapper { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; border: 2px solid var(--electric-blue); flex-shrink: 0; }
 .player-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-.player-name { font-size: 0.8em; font-weight: bold; }
-.player-bid { font-size: 0.6em; color: var(--bid-color); display: block; }
-.player-stats-mini { display: flex; gap: 8px; font-size: 0.7em; }
+
+.player-text-details { display: flex; flex-direction: column; text-align: left; }
+.player-name { font-weight: bold; font-size: 0.9em; text-transform: uppercase; color: white; }
+.player-bid { font-family: 'Orbitron'; font-size: 0.6em; color: var(--bid-color); }
+
+.player-stats-mini { display: flex; gap: 10px; }
+.stat-box { display: flex; flex-direction: column; align-items: center; min-width: 30px; }
+.stat-box .label { font-size: 0.55em; color: var(--text-muted); font-weight: bold; }
+.stat-box .val { font-family: 'Orbitron'; font-size: 0.9em; font-weight: bold; }
+.stat-box.highlight .val { color: var(--highlight-gold); }
+
+@media (max-width: 600px) {
+    .weekly-container { flex-direction: column; }
+    .action-bubbles-container { flex-direction: column; width: 100%; }
+    .action-bubble { text-align: center; }
+}
