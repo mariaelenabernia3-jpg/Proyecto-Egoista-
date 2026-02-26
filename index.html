@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blue Lock - Proyecto Egoísta</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Fuentes -->
+    <!-- Fuentes de Google -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Iconos -->
+    <!-- Iconos de Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -37,18 +37,18 @@
         <div class="global-leaderboard">
             <h3>CLASIFICACIÓN GLOBAL</h3>
             <div id="leaderboardContent">
-                <p style="text-align: center; color: var(--text-muted); font-family: 'Orbitron';">Cargando datos...</p>
+                <p style="text-align: center; color: var(--text-muted); font-family: 'Orbitron';">Buscando datos en la nube...</p>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE INSPECCIÓN DE PERFIL -->
+    <!-- MODAL DE INSPECCIÓN DE PERFIL (Para ver copas) -->
     <div id="inspectModal" class="inspect-modal">
         <div class="inspect-content">
             <span class="close-inspect" id="closeInspect">&times;</span>
             <div class="inspect-img"><img id="inspectImg" src="" alt=""></div>
             <div id="inspectName" class="inspect-name">NOMBRE</div>
-            <p style="color: var(--electric-blue); font-size: 0.8em; margin-bottom: 10px; font-family: 'Orbitron';">COPAS SEMANALES</p>
+            <p style="color: var(--electric-blue); font-size: 0.8em; margin-bottom: 10px; font-family: 'Orbitron';">COPAS SEMANALES GANADAS</p>
             <div class="cups-container">
                 <i class="fas fa-trophy cup-icon-big"></i>
                 <span id="inspectCups" class="cup-count">0</span>
@@ -56,11 +56,12 @@
         </div>
     </div>
 
-    <!-- FIREBASE -->
+    <!-- SCRIPTS DE FIREBASE (Versión 8.10.1) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
+        // CONFIGURACIÓN DE TU FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyDSyHDZzCzqtDfQ7AvtP7or0Lz81HO3A88",
             authDomain: "bluelock-proyecto.firebaseapp.com",
@@ -76,64 +77,91 @@
         const db = firebase.database();
         let allPlayers = {};
 
-        // Escuchar cambios en tiempo real
+        // --- 1. ESCUCHAR CAMBIOS EN TIEMPO REAL ---
         db.ref('players').on('value', (snapshot) => {
             allPlayers = snapshot.val();
             if (allPlayers) {
+                // Guardamos copia para login offline o rápido
                 localStorage.setItem('blPlayersData', JSON.stringify(allPlayers));
                 renderLeaderboard(allPlayers);
             }
         });
 
+        // --- 2. DIBUJAR TABLA (Calculando Puntos: Goles + Victorias) ---
         function renderLeaderboard(players) {
             const container = document.getElementById('leaderboardContent');
-            // Ordenar por goles, luego por victorias
-            const sorted = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
+            
+            // Ordenar: (Goles + Victorias)
+            const sorted = Object.values(players).sort((a, b) => {
+                const ptsA = (a.matchStats.g || 0) + (a.matchStats.pg || 0);
+                const ptsB = (b.matchStats.g || 0) + (b.matchStats.pg || 0);
+                return ptsB - ptsA;
+            });
 
             container.innerHTML = sorted.map((p, index) => {
-                const position = index + 1;
-                const isFirst = position === 1;
-                const rankDisplay = isFirst ? '<i class="fas fa-crown crown-icon"></i>' : position;
+                const totalPts = (p.matchStats.g || 0) + (p.matchStats.pg || 0);
+                const isFirst = index === 0;
+                const rankDisplay = isFirst ? '<i class="fas fa-crown crown-icon"></i>' : index + 1;
 
                 return `
                     <div class="player-row" onclick="inspectPlayer('${p.id}')">
                         <div class="player-info">
                             <div class="rank-badge">${rankDisplay}</div>
-                            <div class="player-img-wrapper"><img src="${p.img}"></div>
+                            <div class="player-img-wrapper">
+                                <img src="${p.img.startsWith('data') ? p.img : p.img}" alt="">
+                            </div>
                             <div class="player-text-details">
                                 <span class="player-name">${p.name}</span>
                                 <span class="player-bid">BID: $${p.bid.toLocaleString()}</span>
                             </div>
                         </div>
                         <div class="player-stats-mini">
-                            <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
-                            <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
+                            <div class="stat-box pts">
+                                <span class="label">PTS</span>
+                                <span class="val">${totalPts}</span>
+                            </div>
+                            <div class="stat-box highlight">
+                                <span class="label">G</span>
+                                <span class="val">${p.matchStats.g}</span>
+                            </div>
                         </div>
                     </div>`;
             }).join('');
         }
 
+        // --- 3. FUNCIÓN INSPECCIONAR PERFIL ---
         function inspectPlayer(playerId) {
             const p = allPlayers[playerId];
             if(!p) return;
             document.getElementById('inspectName').textContent = p.name;
-            document.getElementById('inspectImg').src = p.img;
+            document.getElementById('inspectImg').src = p.img.startsWith('data') ? p.img : p.img;
             document.getElementById('inspectCups').textContent = p.trophies ? p.trophies.length : 0;
             document.getElementById('inspectModal').style.display = 'flex';
         }
 
-        document.getElementById('closeInspect').onclick = () => document.getElementById('inspectModal').style.display = 'none';
-        
+        // --- 4. LÓGICA DE LOGIN ---
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
             const user = document.getElementById('username').value.trim();
             const pass = document.getElementById('password').value.trim();
-            if (user === 'Ego' && pass === '123') { window.location.href = 'ego/ego_dashboard.html'; return; }
-            if (allPlayers[user] && allPlayers[user].password === pass) {
-                window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
-            } else { alert('Credenciales incorrectas'); }
+
+            if (user === 'Ego' && pass === '123') {
+                window.location.href = 'ego/ego_dashboard.html';
+                return;
+            }
+
+            if (allPlayers[user]) {
+                if (allPlayers[user].password === pass) {
+                    window.location.href = `${user.toLowerCase()}/${user.toLowerCase()}_dashboard.html`;
+                } else {
+                    alert('Contraseña incorrecta');
+                }
+            } else {
+                alert('El usuario no existe o los datos aún no se han sincronizado.');
+            }
         };
 
+        // --- 5. INTERFAZ (Contraseña, Cierres y Frases) ---
         document.getElementById('togglePassword').onclick = function() {
             const input = document.getElementById('password');
             input.type = input.type === "password" ? "text" : "password";
@@ -141,7 +169,15 @@
             this.querySelector('i').classList.toggle('fa-eye-slash');
         };
 
-        const egoQuotes = ["El talento sin pulir es basura.", "Despierta, delantero.", "Rompe tus cadenas.", "El fútbol es para egoístas."];
+        document.getElementById('closeInspect').onclick = () => document.getElementById('inspectModal').style.display = 'none';
+
+        window.onclick = (event) => {
+            if (event.target == document.getElementById('inspectModal')) {
+                document.getElementById('inspectModal').style.display = 'none';
+            }
+        };
+
+        const egoQuotes = ["El talento sin pulir es basura.", "Despierta, delantero.", "Rompe tus cadenas.", "El gol es el producto de un ego inmenso.", "Solo los locos cambian el mundo."];
         document.getElementById('egoQuote').textContent = `"${egoQuotes[Math.floor(Math.random() * egoQuotes.length)]}"`;
     </script>
 </body>

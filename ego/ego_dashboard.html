@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ego Jinpachi - Control Maestro</title>
+    <title>Blue Lock Admin - Ego Jinpachi</title>
     <link rel="stylesheet" href="ego_dashboard_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -15,26 +15,27 @@
     </div>
 
     <main class="main-content">
-        <h1>SISTEMA DE EVOLUCIÓN</h1>
+        <h1>CONTROL DE EVOLUCIÓN</h1>
         <div id="egoQuoteDashboard" class="ego-quote-dashboard">"El talento sin pulir es solo basura."</div>
 
-        <!-- 1. GESTIÓN SEMANAL Y TROFEOS -->
+        <!-- 1. GESTIÓN DE PREMIOS Y SEMANA -->
         <div class="admin-section">
-            <h2>PREMIACIÓN Y CIERRE DE SEMANA</h2>
+            <h2>CIERRE DE SEMANA Y TROFEOS</h2>
+            <p style="color: #888; font-size: 0.8em; margin-bottom: 15px;">Selecciona al mejor para darle su trofeo y resetear los puntos de la semana (Goles + Victorias).</p>
             <select id="winnerSelect" class="input-field">
-                <option value="">-- Seleccionar Ganador de la Semana --</option>
+                <option value="">-- Seleccionar Ganador --</option>
             </select>
-            <input type="text" id="weekTitle" class="input-field" placeholder="Nombre del Trofeo (Ej: Ganador Semana 2)">
+            <input type="text" id="weekTitle" class="input-field" placeholder="Nombre del Logro (Ej: Ganador Semana 2)">
             <button id="giveTrophyBtn" class="trophy-btn">
-                <i class="fas fa-trophy"></i> DAR TROFEO Y REINICIAR TABLA SEMANAL
+                <i class="fas fa-award"></i> ENTREGAR TROFEO Y REINICIAR SEMANA
             </button>
         </div>
 
-        <!-- 2. EDITOR MAESTRO DE JUGADORES -->
+        <!-- 2. EDITOR MAESTRO (MODO DIOS) -->
         <div class="admin-section">
-            <h2>MODO DIOS: EDITOR DE ESTADÍSTICAS</h2>
+            <h2>EDITOR DE JUGADORES</h2>
             <select id="playerSelect" class="input-field">
-                <option value="">-- Seleccionar Jugador --</option>
+                <option value="">-- Seleccionar Jugador para Editar --</option>
                 <option value="Rin">Ernesto (Rin)</option>
                 <option value="Nagi">Kevin (Nagi)</option>
                 <option value="Bachira">Yulien (Bachira)</option>
@@ -45,18 +46,19 @@
 
             <div id="editorForm" style="display: none; width: 100%;">
                 <div class="editor-grid">
-                    <!-- Rendimiento Físico y Goles -->
+                    <!-- RENDIMIENTO GLOBAL -->
                     <div class="editor-box">
-                        <h3 style="color: var(--highlight-gold);">DATOS DE PARTIDO</h3>
-                        <div class="input-row"><label>Partidos Totales</label><input type="number" id="edit_pj" class="input-field min-input"></div>
-                        <div class="input-row"><label>Ganados</label><input type="number" id="edit_pg" class="input-field min-input"></div>
-                        <div class="input-row"><label>Perdidos</label><input type="number" id="edit_pp" class="input-field min-input"></div>
-                        <div class="input-row"><label>Goles Totales</label><input type="number" id="edit_g" class="input-field min-input"></div>
+                        <h3 style="color: var(--highlight-gold);">ESTADÍSTICAS TOTALES</h3>
+                        <p style="font-size: 0.7em; color: #888;">El sistema sumará la diferencia automáticamente a la tabla semanal.</p>
+                        <div class="input-row"><label>Partidos Jugados</label><input type="number" id="edit_pj" class="input-field min-input"></div>
+                        <div class="input-row"><label>Ganados (PG)</label><input type="number" id="edit_pg" class="input-field min-input"></div>
+                        <div class="input-row"><label>Perdidos (PP)</label><input type="number" id="edit_pp" class="input-field min-input"></div>
+                        <div class="input-row"><label>Goles (G)</label><input type="number" id="edit_g" class="input-field min-input"></div>
                     </div>
 
-                    <!-- Habilidades -->
+                    <!-- HABILIDADES -->
                     <div class="editor-box">
-                        <h3 style="color: var(--electric-blue);">HABILIDADES</h3>
+                        <h3 style="color: var(--electric-blue);">HABILIDADES (0-99)</h3>
                         <div class="input-row"><label>Ritmo</label><input type="number" id="edit_ritmo" class="input-field min-input"></div>
                         <div class="input-row"><label>Tiro</label><input type="number" id="edit_tiro" class="input-field min-input"></div>
                         <div class="input-row"><label>Pase</label><input type="number" id="edit_pase" class="input-field min-input"></div>
@@ -77,7 +79,6 @@
         </div>
     </main>
 
-    <!-- SCRIPTS DE FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -103,14 +104,16 @@
             players = snapshot.val();
             if (!players) return;
 
-            const sel = document.getElementById('winnerSelect');
-            const val = sel.value;
-            sel.innerHTML = '<option value="">-- Seleccionar Ganador --</option>' + 
-                Object.values(players).map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-            sel.value = val;
+            const winSel = document.getElementById('winnerSelect');
+            const savedVal = winSel.value;
+            winSel.innerHTML = '<option value="">-- Seleccionar Ganador --</option>';
+            Object.values(players).forEach(p => {
+                winSel.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+            });
+            winSel.value = savedVal;
         });
 
-        // 2. LÓGICA DEL EDITOR
+        // 2. EDITOR
         const pSelect = document.getElementById('playerSelect');
         const eForm = document.getElementById('editorForm');
 
@@ -123,6 +126,7 @@
             document.getElementById('edit_pg').value = p.matchStats.pg;
             document.getElementById('edit_pp').value = p.matchStats.pp;
             document.getElementById('edit_g').value = p.matchStats.g;
+
             document.getElementById('edit_ritmo').value = p.stats.ritmo;
             document.getElementById('edit_tiro').value = p.stats.tiro;
             document.getElementById('edit_pase').value = p.stats.pase;
@@ -135,19 +139,24 @@
             const id = pSelect.value;
             const p = players[id];
 
-            // Cálculo para la tabla semanal automática
+            // Cálculo para la tabla semanal automática (Detectar diferencias)
             const oldTotalGoles = p.matchStats.g;
-            const newTotalGoles = parseInt(document.getElementById('edit_g').value) || 0;
-            const difGoles = newTotalGoles - oldTotalGoles;
+            const oldTotalPG = p.matchStats.pg;
 
-            if (difGoles > 0) {
-                if (!p.weeklyStats) p.weeklyStats = { g: 0, pg: 0, pj: 0 };
-                p.weeklyStats.g += difGoles;
-            }
+            const newTotalGoles = parseInt(document.getElementById('edit_g').value) || 0;
+            const newTotalPG = parseInt(document.getElementById('edit_pg').value) || 0;
+
+            const difGoles = newTotalGoles - oldTotalGoles;
+            const difPG = newTotalPG - oldTotalPG;
+
+            // Actualizar Semanal (Suma los puntos de la semana basándose en el cambio)
+            if (!p.weeklyStats) p.weeklyStats = { g: 0, pg: 0, pj: 0 };
+            p.weeklyStats.g += difGoles;
+            p.weeklyStats.pg += difPG;
 
             // Actualizar Global
             p.matchStats.pj = parseInt(document.getElementById('edit_pj').value) || 0;
-            p.matchStats.pg = parseInt(document.getElementById('edit_pg').value) || 0;
+            p.matchStats.pg = newTotalPG;
             p.matchStats.pp = parseInt(document.getElementById('edit_pp').value) || 0;
             p.matchStats.g = newTotalGoles;
 
@@ -159,30 +168,33 @@
             p.stats.defensa = parseInt(document.getElementById('edit_defensa').value) || 0;
             p.stats.fisico = parseInt(document.getElementById('edit_fisico').value) || 0;
 
-            // Auto-cálculos de Dinero y Media
+            // --- AUTO CÁLCULOS ---
+            // 1. Dinero (BID): $10M por gol + $5M por victoria
             p.bid = (p.matchStats.g * 10000000) + (p.matchStats.pg * 5000000);
+            
+            // 2. Media General (Promedio)
             p.stats.media = Math.round((p.stats.ritmo + p.stats.tiro + p.stats.pase + p.stats.regate + p.stats.defensa + p.stats.fisico) / 6);
             
-            // Cálculo de XP
+            // 3. XP (Cada gol 5xp, cada victoria 10xp)
             p.xp = (p.matchStats.g * 5) + (p.matchStats.pg * 10);
-            if (p.xp >= 100) {
-                p.level = Math.floor(p.xp / 100);
-                p.xp = p.xp % 100;
+            while (p.xp >= 100) {
+                p.level++;
+                p.xp -= 100;
             }
 
-            playersRef.set(players).then(() => alert("Sincronizado correctamente."));
+            playersRef.set(players).then(() => alert(`¡${p.name} actualizado!\nNuevos Puntos de la semana sumados: ${difGoles + difPG}`));
         };
 
-        // 3. LÓGICA DE TROFEOS Y REINICIO SEMANAL
+        // 3. ENTREGAR TROFEO Y REINICIAR SEMANA
         document.getElementById('giveTrophyBtn').onclick = () => {
             const vid = document.getElementById('winnerSelect').value;
             const title = document.getElementById('weekTitle').value;
-            if (!vid || !title) return alert("Selecciona ganador y nombre del trofeo.");
+            if (!vid || !title) return alert("Faltan datos.");
 
             if (!players[vid].trophies) players[vid].trophies = [];
             players[vid].trophies.push({ title: title, icon: "fas fa-trophy", color: "#f7e018" });
 
-            // Reiniciar semanal de TODOS
+            // Reiniciar semanal de TODOS (Pone los PTS semanales a 0)
             Object.keys(players).forEach(k => {
                 players[k].weeklyStats = { g: 0, pg: 0, pj: 0 };
             });
@@ -193,7 +205,7 @@
             });
         };
 
-        // 4. RULETA
+        // 4. RULETA FULL AZAR
         document.getElementById('generateBtn').onclick = () => {
             let pool = Object.values(players).sort(() => Math.random() - 0.5);
             document.getElementById('teamsDisplay').innerHTML = `

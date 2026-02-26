@@ -7,7 +7,6 @@
     <!-- Enlace al CSS específico de Isagi -->
     <link rel="stylesheet" href="isagi_dashboard_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -40,17 +39,13 @@
             <!-- VITRINA DE TROFEOS -->
             <div class="trophy-room">
                 <h3>VITRINA DE TROFEOS</h3>
-                <div id="trophyList" class="trophy-icons">
-                    <!-- Dinámico -->
-                </div>
+                <div id="trophyList" class="trophy-icons"></div>
             </div>
 
-            <!-- TABLA SEMANAL -->
+            <!-- TABLA SEMANAL POR PUNTOS -->
             <div class="weekly-table">
                 <h3>BATALLA DE LA SEMANA</h3>
-                <div id="weeklyList">
-                    <!-- Dinámico -->
-                </div>
+                <div id="weeklyList"></div>
             </div>
         </div>
 
@@ -61,7 +56,7 @@
         </div>
     </main>
 
-    <!-- MODAL DE RANKING GLOBAL -->
+    <!-- MODAL DE RANKING GLOBAL POR PUNTOS -->
     <div class="coming-soon-modal" id="leaderboardModal">
         <div class="leaderboard-modal-content">
             <span class="close-button" id="closeLeaderboard">&times;</span>
@@ -70,7 +65,6 @@
         </div>
     </div>
 
-    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -96,13 +90,12 @@
             if(!players) return;
             const me = players[myId];
 
-            // Datos Personales
+            // 1. Datos Personales (Popup)
             document.getElementById('bid-val').textContent = "$" + me.bid.toLocaleString();
             document.getElementById('lvl-val').textContent = me.level;
             document.getElementById('xp-bar').style.width = me.xp + "%";
             document.getElementById('xp-text-val').textContent = me.xp + "/100 XP";
 
-            // Foto de Perfil
             if(me.img) {
                 const imgUrl = me.img.startsWith('data') ? me.img : '../' + me.img;
                 document.getElementById('img-preview').src = imgUrl;
@@ -112,25 +105,38 @@
                 document.getElementById('profileIcon').style.backgroundSize = 'cover';
             }
 
-            // Vitrina de Trofeos
+            // 2. Vitrina de Trofeos
             document.getElementById('trophyList').innerHTML = (me.trophies && me.trophies.length > 0) 
                 ? me.trophies.map(t => `<div class="trophy-item"><i class="${t.icon}" style="color:${t.color}"></i><span>${t.title}</span></div>`).join('') 
-                : '<p style="font-size:0.7em; opacity:0.5;">Sin trofeos aún.</p>';
+                : '<p style="font-size:0.7em; opacity:0.5;">Sin trofeos ganados.</p>';
 
-            // Tabla Semanal
-            const sortedWeekly = Object.values(players).sort((a,b) => b.weeklyStats.g - a.weeklyStats.g);
-            document.getElementById('weeklyList').innerHTML = sortedWeekly.map((p, i) => `
+            // 3. Tabla Semanal (Goles + Victorias de la semana)
+            const sortedWeekly = Object.values(players).sort((a,b) => {
+                const ptsA = (a.weeklyStats.g || 0) + (a.weeklyStats.pg || 0);
+                const ptsB = (b.weeklyStats.g || 0) + (b.weeklyStats.pg || 0);
+                return ptsB - ptsA;
+            });
+            document.getElementById('weeklyList').innerHTML = sortedWeekly.map((p, i) => {
+                const wPts = (p.weeklyStats.g || 0) + (p.weeklyStats.pg || 0);
+                return `
                 <div class="weekly-list-item ${p.id === myId ? 'highlight' : ''}">
-                    <span>${i+1}. ${p.name}</span><span>${p.weeklyStats.g} Goles</span>
-                </div>`).join('');
+                    <span>${i+1}. ${p.name}</span><span style="font-family:'Orbitron'">${wPts} PTS</span>
+                </div>`;
+            }).join('');
 
-            // Ranking Global y Modal
-            const sortedGlobal = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
+            // 4. Ranking Global y Modal (Goles + Victorias totales)
+            const sortedGlobal = Object.values(players).sort((a, b) => {
+                const ptsA = (a.matchStats.g || 0) + (a.matchStats.pg || 0);
+                const ptsB = (b.matchStats.g || 0) + (b.matchStats.pg || 0);
+                return ptsB - ptsA;
+            });
+            
             document.getElementById('pos-val').textContent = sortedGlobal.findIndex(p => p.id === myId) + 1;
             
             document.getElementById('modalList').innerHTML = sortedGlobal.map((p, i) => {
-                const position = i + 1;
-                const rankDisplay = position === 1 ? '<i class="fas fa-crown crown-icon"></i>' : position;
+                const totalPts = (p.matchStats.g || 0) + (p.matchStats.pg || 0);
+                const isFirst = i === 0;
+                const rankDisplay = isFirst ? '<i class="fas fa-crown crown-icon"></i>' : i + 1;
                 return `
                     <div class="player-row" style="${p.id === myId ? 'border-left: 5px solid gold' : ''}">
                         <div class="player-info">
@@ -144,30 +150,22 @@
                             </div>
                         </div>
                         <div class="player-stats-mini">
-                            <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                            <div class="stat-box pts"><span class="label">PTS</span><span class="val">${totalPts}</span></div>
                             <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
                         </div>
                     </div>`;
             }).join('');
         });
 
-        // Subir Foto
         document.getElementById('profilePicInput').onchange = (e) => {
             const reader = new FileReader();
             reader.onload = (ev) => db.ref('players/' + myId).update({ img: ev.target.result });
             reader.readAsDataURL(e.target.files[0]);
         };
 
-        // Interfaz
         document.getElementById('profileIcon').onclick = () => document.getElementById('profilePopup').classList.toggle('active');
         document.getElementById('leaderboardBtn').onclick = () => document.getElementById('leaderboardModal').style.display = 'flex';
         document.getElementById('closeLeaderboard').onclick = () => document.getElementById('leaderboardModal').style.display = 'none';
-        
-        window.onclick = (event) => {
-            if (event.target == document.getElementById('leaderboardModal')) {
-                document.getElementById('leaderboardModal').style.display = 'none';
-            }
-        };
     </script>
 </body>
 </html>

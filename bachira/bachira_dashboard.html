@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Yulien</title>
-    <!-- Enlace al CSS específico de Bachira -->
     <link rel="stylesheet" href="bachira_dashboard_style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -39,17 +38,13 @@
             <!-- VITRINA DE TROFEOS -->
             <div class="trophy-room">
                 <h3>VITRINA DE TROFEOS</h3>
-                <div id="trophyList" class="trophy-icons">
-                    <!-- Se carga desde Firebase -->
-                </div>
+                <div id="trophyList" class="trophy-icons"></div>
             </div>
 
-            <!-- TABLA SEMANAL -->
+            <!-- TABLA SEMANAL POR PUNTOS -->
             <div class="weekly-table">
                 <h3>BATALLA DE LA SEMANA</h3>
-                <div id="weeklyList">
-                    <!-- Se carga desde Firebase -->
-                </div>
+                <div id="weeklyList"></div>
             </div>
         </div>
 
@@ -60,7 +55,7 @@
         </div>
     </main>
 
-    <!-- MODAL DE RANKING GLOBAL -->
+    <!-- MODAL DE RANKING GLOBAL POR PUNTOS -->
     <div class="coming-soon-modal" id="leaderboardModal">
         <div class="leaderboard-modal-content">
             <span class="close-button" id="closeLeaderboard">&times;</span>
@@ -69,12 +64,10 @@
         </div>
     </div>
 
-    <!-- SCRIPTS DE FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // CONFIGURACIÓN ÚNICA DE BACHIRA
         const myId = "Bachira"; 
 
         const firebaseConfig = {
@@ -91,19 +84,17 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // ESCUCHAR CAMBIOS EN TIEMPO REAL
         db.ref('players').on('value', (snapshot) => {
             const players = snapshot.val();
             if(!players) return;
             const me = players[myId];
 
-            // 1. Datos del Popup
+            // 1. UI Personal
             document.getElementById('bid-val').textContent = "$" + me.bid.toLocaleString();
             document.getElementById('lvl-val').textContent = me.level;
             document.getElementById('xp-bar').style.width = me.xp + "%";
             document.getElementById('xp-text-val').textContent = me.xp + "/100 XP";
 
-            // 2. Cargar Foto
             if(me.img) {
                 const imgUrl = me.img.startsWith('data') ? me.img : '../' + me.img;
                 document.getElementById('img-preview').src = imgUrl;
@@ -113,23 +104,36 @@
                 document.getElementById('profileIcon').style.backgroundSize = 'cover';
             }
 
-            // 3. Renderizar Trofeos
+            // 2. Vitrina de Trofeos
             document.getElementById('trophyList').innerHTML = (me.trophies && me.trophies.length > 0) 
                 ? me.trophies.map(t => `<div class="trophy-item"><i class="${t.icon}" style="color:${t.color}"></i><span>${t.title}</span></div>`).join('') 
-                : '<p style="font-size:0.7em; color:#666;">Aún no tienes trofeos.</p>';
+                : '<p style="font-size:0.7em; opacity:0.5;">Sin trofeos aún.</p>';
 
-            // 4. Renderizar Tabla Semanal
-            const sortedWeekly = Object.values(players).sort((a,b) => b.weeklyStats.g - a.weeklyStats.g);
-            document.getElementById('weeklyList').innerHTML = sortedWeekly.map((p, i) => `
+            // 3. Tabla Semanal (Puntos = G + PG de la semana)
+            const sortedWeekly = Object.values(players).sort((a,b) => {
+                const ptsA = (a.weeklyStats.g || 0) + (a.weeklyStats.pg || 0);
+                const ptsB = (b.weeklyStats.g || 0) + (b.weeklyStats.pg || 0);
+                return ptsB - ptsA;
+            });
+            document.getElementById('weeklyList').innerHTML = sortedWeekly.map((p, i) => {
+                const wPts = (p.weeklyStats.g || 0) + (p.weeklyStats.pg || 0);
+                return `
                 <div class="weekly-list-item ${p.id === myId ? 'highlight' : ''}">
-                    <span>${i+1}. ${p.name}</span><span>${p.weeklyStats.g} Goles</span>
-                </div>`).join('');
+                    <span>${i+1}. ${p.name}</span><span>${wPts} PTS</span>
+                </div>`;
+            }).join('');
 
-            // 5. Ranking Global y Modal (Diseño Corregido)
-            const sortedGlobal = Object.values(players).sort((a, b) => b.matchStats.g - a.matchStats.g || b.matchStats.pg - a.matchStats.pg);
+            // 4. Ranking Global y Modal (Puntos = G + PG totales)
+            const sortedGlobal = Object.values(players).sort((a, b) => {
+                const ptsA = (a.matchStats.g || 0) + (a.matchStats.pg || 0);
+                const ptsB = (b.matchStats.g || 0) + (b.matchStats.pg || 0);
+                return ptsB - ptsA;
+            });
+            
             document.getElementById('pos-val').textContent = sortedGlobal.findIndex(p => p.id === myId) + 1;
             
             document.getElementById('modalList').innerHTML = sortedGlobal.map((p, i) => {
+                const totalPts = (p.matchStats.g || 0) + (p.matchStats.pg || 0);
                 const isFirst = i === 0;
                 const rankDisplay = isFirst ? '<i class="fas fa-crown crown-icon"></i>' : i + 1;
                 return `
@@ -145,32 +149,22 @@
                             </div>
                         </div>
                         <div class="player-stats-mini">
-                            <div class="stat-box"><span class="label">PJ</span><span class="val">${p.matchStats.pj}</span></div>
+                            <div class="stat-box pts"><span class="label">PTS</span><span class="val">${totalPts}</span></div>
                             <div class="stat-box highlight"><span class="label">G</span><span class="val">${p.matchStats.g}</span></div>
                         </div>
                     </div>`;
             }).join('');
         });
 
-        // Subida de Foto
         document.getElementById('profilePicInput').onchange = (e) => {
             const reader = new FileReader();
-            reader.onload = (ev) => {
-                db.ref('players/' + myId).update({ img: ev.target.result });
-            };
+            reader.onload = (ev) => db.ref('players/' + myId).update({ img: ev.target.result });
             reader.readAsDataURL(e.target.files[0]);
         };
 
-        // Interfaz
         document.getElementById('profileIcon').onclick = () => document.getElementById('profilePopup').classList.toggle('active');
         document.getElementById('leaderboardBtn').onclick = () => document.getElementById('leaderboardModal').style.display = 'flex';
         document.getElementById('closeLeaderboard').onclick = () => document.getElementById('leaderboardModal').style.display = 'none';
-        
-        window.onclick = (event) => {
-            if (event.target == document.getElementById('leaderboardModal')) {
-                document.getElementById('leaderboardModal').style.display = 'none';
-            }
-        };
     </script>
 </body>
 </html>
